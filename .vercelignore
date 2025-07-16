@@ -1,0 +1,12 @@
+attached_assets/
+*.db
+*.log
+node_modules/
+.env
+server/
+client/
+shared/
+src/
+*.ts
+*.tsx
+drizzle.config.json
