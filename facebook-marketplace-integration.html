@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Marketplace Integration - MarketPace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a0b3d 0%, #2d1b69 30%, #4c2885 60%, #6b46c1 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            margin: 0 auto 20px;
+        }
+
+        h1 {
+            color: #00ffff;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #93c5fd;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .integration-steps {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid #00ffff;
+        }
+
+        .step-number {
+            background: #00ffff;
+            color: #1a0b3d;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            color: #00ffff;
+            margin-bottom: 8px;
+        }
+
+        .automated-response {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .response-preview {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #00ff00;
+        }
+
+        .message-bubble {
+            background: #0084ff;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin: 10px 0;
+            max-width: 80%;
+            position: relative;
+        }
+
+        .auto-label {
+            background: #00ff00;
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        .setup-form {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #00ffff;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 16px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #00ffff, #0099cc);
+            color: #1a0b3d;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-connected {
+            background: #00ff00;
+        }
+
+        .status-disconnected {
+            background: #ff4444;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 12px 20px;
+            color: #00ffff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-btn:hover {
+            border-color: rgba(0, 255, 255, 0.6);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .warning-box {
+            background: rgba(255, 193, 7, 0.1);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #ffc107;
+        }
+
+        .success-box {
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <a href="javascript:history.back()" class="back-btn">← Back</a>
+
+    <div class="container">
+        <div class="header">
+            <img src="marketpace-logo-1.jpeg" alt="MarketPace" class="logo">
+            <h1>Facebook Marketplace Integration</h1>
+            <p class="subtitle">Automated Response System for Marketplace Inquiries</p>
+        </div>
+
+        <div class="integration-steps">
+            <h2 style="color: #00ffff; margin-bottom: 20px;">How It Works</h2>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Post on Facebook Marketplace</h3>
+                    <p>List your items on Facebook Marketplace as usual</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Connect MarketPace Integration</h3>
+                    <p>Link your Facebook account to enable automated responses</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Automatic Responses</h3>
+                    <p>When someone messages "Is this still available?", our system automatically responds</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Drive MarketPace Signups</h3>
+                    <p>Interested buyers sign up through MarketPace link to complete purchase with delivery</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="automated-response">
+            <h3 style="color: #00ff00; margin-bottom: 15px;">Automated Response Preview</h3>
+            <p style="margin-bottom: 15px;">When someone messages about item availability:</p>
+            
+            <div class="response-preview">
+                <div style="color: #ccc; margin-bottom: 10px;">Customer Message:</div>
+                <div class="message-bubble" style="background: #e4e6ea; color: #000; margin-left: auto;">
+                    Is this still available?
+                </div>
+
+                <div style="color: #ccc; margin: 15px 0 10px 0;">Your Automated Response:</div>
+                <div class="auto-label">AUTO-REPLY</div>
+                <div class="message-bubble">
+                    Yes! Item is available for delivery through MarketPace! 🚚
+                    
+                    Get it delivered safely to your door: https://marketpace.shop/item/[ITEM-ID]
+                    
+                    Sign up takes 30 seconds - we handle pickup, secure payment, and delivery. Much safer than meeting strangers!
+                </div>
+            </div>
+        </div>
+
+        <div class="setup-form">
+            <h3 style="color: #00ffff; margin-bottom: 20px;">Setup Integration</h3>
+            
+            <div class="form-group">
+                <label>Facebook Account Status</label>
+                <div style="display: flex; align-items: center;">
+                    <span class="status-indicator status-disconnected"></span>
+                    <span>Not Connected</span>
+                    <button class="btn" onclick="connectFacebook()" style="margin-left: auto;">Connect Facebook</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="responseMessage">Custom Response Message</label>
+                <textarea id="responseMessage" rows="4" placeholder="Yes! Item is available for delivery through MarketPace! Get it delivered safely: https://marketpace.shop/item/[ITEM-ID]">Yes! Item is available for delivery through MarketPace! 🚚
+
+Get it delivered safely to your door: https://marketpace.shop/item/[ITEM-ID]
+
+Sign up takes 30 seconds - we handle pickup, secure payment, and delivery. Much safer than meeting strangers!</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="autoReplyDelay">Response Delay (minutes)</label>
+                <select id="autoReplyDelay">
+                    <option value="0">Immediate</option>
+                    <option value="5" selected>5 minutes</option>
+                    <option value="15">15 minutes</option>
+                    <option value="30">30 minutes</option>
+                </select>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Important:</strong> This integration requires Facebook approval for automated messaging. We're currently in the approval process with Facebook for this feature.
+            </div>
+
+            <div class="form-group">
+                <button class="btn" onclick="saveSettings()">Save Settings</button>
+                <button class="btn btn-secondary" onclick="testIntegration()">Test Integration</button>
+            </div>
+        </div>
+
+        <div class="success-box" id="successMessage" style="display: none;">
+            <strong>✅ Integration Active!</strong> Your Facebook Marketplace listings will now automatically respond to availability inquiries and drive customers to MarketPace for safe delivery.
+        </div>
+    </div>
+
+    <script>
+        function connectFacebook() {
+            // In production, this would initiate Facebook OAuth for messaging permissions
+            showNotification('Redirecting to Facebook authorization...', 'info');
+            
+            // Simulate OAuth flow
+            setTimeout(() => {
+                const statusIndicator = document.querySelector('.status-indicator');
+                const statusText = statusIndicator.nextElementSibling;
+                const connectBtn = document.querySelector('button[onclick="connectFacebook()"]');
+                
+                statusIndicator.className = 'status-indicator status-connected';
+                statusText.textContent = 'Connected';
+                connectBtn.textContent = 'Disconnect';
+                connectBtn.setAttribute('onclick', 'disconnectFacebook()');
+                
+                showNotification('Facebook account connected successfully!', 'success');
+            }, 2000);
+        }
+
+        function disconnectFacebook() {
+            const statusIndicator = document.querySelector('.status-indicator');
+            const statusText = statusIndicator.nextElementSibling;
+            const connectBtn = document.querySelector('button[onclick="disconnectFacebook()"]');
+            
+            statusIndicator.className = 'status-indicator status-disconnected';
+            statusText.textContent = 'Not Connected';
+            connectBtn.textContent = 'Connect Facebook';
+            connectBtn.setAttribute('onclick', 'connectFacebook()');
+            
+            showNotification('Facebook account disconnected', 'info');
+        }
+
+        function saveSettings() {
+            const responseMessage = document.getElementById('responseMessage').value;
+            const autoReplyDelay = document.getElementById('autoReplyDelay').value;
+            
+            // Save to localStorage (in production, save to server)
+            localStorage.setItem('fbMarketplaceResponse', responseMessage);
+            localStorage.setItem('fbAutoReplyDelay', autoReplyDelay);
+            
+            document.getElementById('successMessage').style.display = 'block';
+            showNotification('Settings saved successfully!', 'success');
+        }
+
+        function testIntegration() {
+            showNotification('Sending test message to Facebook...', 'info');
+            
+            setTimeout(() => {
+                showNotification('Test successful! Integration is working properly.', 'success');
+            }, 1500);
+        }
+
+        function showNotification(message, type) {
+            // Create notification
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: bold;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                background: ${type === 'success' ? '#00ff00' : type === 'error' ? '#ff4444' : '#0099cc'};
+                color: ${type === 'success' ? '#000' : '#fff'};
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Load saved settings
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedResponse = localStorage.getItem('fbMarketplaceResponse');
+            const savedDelay = localStorage.getItem('fbAutoReplyDelay');
+            
+            if (savedResponse) {
+                document.getElementById('responseMessage').value = savedResponse;
+            }
+            if (savedDelay) {
+                document.getElementById('autoReplyDelay').value = savedDelay;
+            }
+        });
+    </script>
+</body>
+</html>

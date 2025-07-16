@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketPace - Community Commerce</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0d0221 0%, #1a0233 50%, #2d1b69 100%);
+            color: white;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(0, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-40px) rotate(180deg); opacity: 0.8; }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 12px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00ffff, #9d4edd);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .search-bar {
+            flex: 1;
+            margin: 0 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 8px 16px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00ffff, #9d4edd);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px 16px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Status Composer */
+        .status-composer {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .composer-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .status-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .status-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .composer-actions {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 12px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Feed Posts */
+        .feed-post {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .post-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .author-info h4 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .author-info p {
+            margin: 0;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .post-content {
+            padding: 0 16px 16px;
+        }
+
+        .post-text {
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .post-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        /* Commerce Features */
+        .commerce-info {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .price-tag {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 8px;
+        }
+
+        .commerce-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .commerce-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .commerce-btn.primary {
+            background: linear-gradient(135deg, #00ffff, #9d4edd);
+            border: none;
+        }
+
+        .commerce-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .commerce-btn.primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Post Interactions */
+        .post-interactions {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 16px;
+        }
+
+        .interaction-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .interaction-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .interaction-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .interaction-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .interaction-btn.liked {
+            color: #ff6b6b;
+        }
+
+        .interaction-btn.favorited {
+            color: #ffd93d;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: #00ffff;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: rgba(13, 2, 33, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 12px;
+            margin: 10% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: rgba(255, 255, 255, 0.6);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #00ffff;
+            font-weight: 500;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .form-input::placeholder, .form-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #00ffff;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #00ffff, #9d4edd);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 15px 12px;
+            }
+            
+            .search-bar {
+                margin: 0 12px;
+            }
+            
+            .commerce-actions {
+                flex-direction: column;
+            }
+            
+            .commerce-btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">MarketPace</div>
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search people, shops, services...">
+            </div>
+            <div class="profile-pic">
+                <span id="userInitials">DU</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Status Composer -->
+        <div class="status-composer">
+            <div class="composer-header">
+                <div class="profile-pic">
+                    <span id="composerInitials">DU</span>
+                </div>
+                <input type="text" class="status-input" placeholder="What's on your mind?" onclick="openModal()">
+            </div>
+            <div class="composer-actions">
+                <button class="action-btn" onclick="openModal('sale')">
+                    <span>🏷️</span> Sell
+                </button>
+                <button class="action-btn" onclick="openModal('rent')">
+                    <span>🏠</span> Rent
+                </button>
+                <button class="action-btn" onclick="openModal('service')">
+                    <span>🔧</span> Service
+                </button>
+                <button class="action-btn" onclick="openModal('event')">
+                    <span>🎉</span> Event
+                </button>
+            </div>
+        </div>
+
+        <!-- Feed Posts -->
+        <div class="feed" id="feedContainer">
+            <!-- Sample Post 1 -->
+            <div class="feed-post">
+                <div class="post-header">
+                    <div class="post-author">
+                        <div class="profile-pic">
+                            <span>SB</span>
+                        </div>
+                        <div class="author-info">
+                            <h4>Sarah's Boutique</h4>
+                            <p>2 hours ago • Orange Beach, AL</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-content">
+                    <div class="post-text">Beautiful vintage leather jacket, perfect condition! Size Medium.</div>
+                    <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400" alt="Leather jacket" class="post-image">
+                    
+                    <div class="commerce-info">
+                        <div class="price-tag">$85.00</div>
+                        <div class="commerce-actions">
+                            <button class="commerce-btn primary" onclick="addToCart(1)">Add to Cart</button>
+                            <button class="commerce-btn" onclick="makeOffer(1)">Make Offer</button>
+                            <button class="commerce-btn" onclick="deliverNow(1)">Deliver Now</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-interactions">
+                    <div class="interaction-stats">
+                        <span>12 likes</span>
+                        <span>3 comments</span>
+                    </div>
+                    <div class="interaction-buttons">
+                        <button class="interaction-btn" onclick="toggleLike(1)">
+                            <span>🤍</span> Like
+                        </button>
+                        <button class="interaction-btn" onclick="showComments(1)">
+                            <span>💬</span> Comment
+                        </button>
+                        <button class="interaction-btn" onclick="toggleFavorite(1)">
+                            <span>☆</span> Favorite
+                        </button>
+                        <button class="interaction-btn" onclick="sharePost(1)">
+                            <span>📤</span> Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Post 2 -->
+            <div class="feed-post">
+                <div class="post-header">
+                    <div class="post-author">
+                        <div class="profile-pic">
+                            <span>MH</span>
+                        </div>
+                        <div class="author-info">
+                            <h4>Mike's Handyman Service</h4>
+                            <p>4 hours ago • Gulf Shores, AL</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-content">
+                    <div class="post-text">Professional home repairs - plumbing, electrical, painting. Licensed and insured!</div>
+                    
+                    <div class="commerce-info">
+                        <div class="price-tag">Starting at $50.00</div>
+                        <div class="commerce-actions">
+                            <button class="commerce-btn primary" onclick="bookService(2)">Book Service</button>
+                            <button class="commerce-btn" onclick="makeOffer(2)">Negotiate Price</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-interactions">
+                    <div class="interaction-stats">
+                        <span>8 likes</span>
+                        <span>2 comments</span>
+                    </div>
+                    <div class="interaction-buttons">
+                        <button class="interaction-btn" onclick="toggleLike(2)">
+                            <span>🤍</span> Like
+                        </button>
+                        <button class="interaction-btn" onclick="showComments(2)">
+                            <span>💬</span> Comment
+                        </button>
+                        <button class="interaction-btn" onclick="toggleFavorite(2)">
+                            <span>☆</span> Favorite
+                        </button>
+                        <button class="interaction-btn" onclick="sharePost(2)">
+                            <span>📤</span> Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Post 3 -->
+            <div class="feed-post">
+                <div class="post-header">
+                    <div class="post-author">
+                        <div class="profile-pic">
+                            <span>JM</span>
+                        </div>
+                        <div class="author-info">
+                            <h4>Jessica Martinez</h4>
+                            <p>6 hours ago • Orange Beach, AL</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-content">
+                    <div class="post-text">Beach umbrella and chairs set available for weekend rental. Perfect for beach days!</div>
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400" alt="Beach setup" class="post-image">
+                    
+                    <div class="commerce-info">
+                        <div class="price-tag">$25.00/day</div>
+                        <div class="commerce-actions">
+                            <button class="commerce-btn primary" onclick="rentNow(3)">Rent Now</button>
+                            <button class="commerce-btn" onclick="makeOffer(3)">Counter Offer</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="post-interactions">
+                    <div class="interaction-stats">
+                        <span>15 likes</span>
+                        <span>5 comments</span>
+                    </div>
+                    <div class="interaction-buttons">
+                        <button class="interaction-btn" onclick="toggleLike(3)">
+                            <span>🤍</span> Like
+                        </button>
+                        <button class="interaction-btn" onclick="showComments(3)">
+                            <span>💬</span> Comment
+                        </button>
+                        <button class="interaction-btn" onclick="toggleFavorite(3)">
+                            <span>☆</span> Favorite
+                        </button>
+                        <button class="interaction-btn" onclick="sharePost(3)">
+                            <span>📤</span> Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-container">
+            <button class="nav-item active" onclick="switchTab('home')">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">Home</div>
+            </button>
+            <button class="nav-item" onclick="switchTab('shop')">
+                <div class="nav-icon">🛍️</div>
+                <div class="nav-label">Shop</div>
+            </button>
+            <button class="nav-item" onclick="switchTab('services')">
+                <div class="nav-icon">🔧</div>
+                <div class="nav-label">Services</div>
+            </button>
+            <button class="nav-item" onclick="switchTab('events')">
+                <div class="nav-icon">🎭</div>
+                <div class="nav-label">Events</div>
+            </button>
+            <button class="nav-item" onclick="switchTab('delivery')">
+                <div class="nav-icon">🚚</div>
+                <div class="nav-label">Delivery</div>
+            </button>
+            <button class="nav-item" onclick="switchTab('menu')">
+                <div class="nav-icon">☰</div>
+                <div class="nav-label">Menu</div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Post Creation Modal -->
+    <div id="postModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 style="margin-bottom: 20px; color: #00ffff;">Create Post</h2>
+            <form id="postForm" onsubmit="submitPost(event)">
+                <div class="form-group">
+                    <label class="form-label">Post Type</label>
+                    <select id="postType" class="form-select">
+                        <option value="general">General Post</option>
+                        <option value="sale">For Sale</option>
+                        <option value="rent">For Rent</option>
+                        <option value="service">Service</option>
+                        <option value="event">Event</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="postDescription" class="form-textarea" placeholder="What's happening?" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Price (optional)</label>
+                    <input type="number" id="postPrice" class="form-input" placeholder="0.00" step="0.01">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" id="postLocation" class="form-input" placeholder="Orange Beach, AL" value="Orange Beach, AL">
+                </div>
+
+                <button type="submit" class="submit-btn">Post</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let likedPosts = [];
+        let favoritedPosts = [];
+
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 4 + 2) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Bottom navigation
+        function switchTab(tab) {
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to clicked item
+            event.target.closest('.nav-item').classList.add('active');
+            
+            console.log(`Switched to ${tab} tab`);
+            
+            // Show appropriate content based on tab
+            switch(tab) {
+                case 'delivery':
+                    alert('Delivery Tracking\n\n📦 Current Deliveries: 0\n🚚 Past Deliveries: 0\n\nStart shopping to see your deliveries here!');
+                    break;
+                case 'menu':
+                    alert('Menu\n\n👤 Profile\n⚙️ Settings\n🏪 Business Account\n🔒 Privacy\n📞 Support\n🚪 Logout');
+                    break;
+                default:
+                    // Filter posts or show different content
+                    break;
+            }
+        }
+
+        // Modal functions
+        function openModal(type = 'general') {
+            document.getElementById('postType').value = type;
+            document.getElementById('postModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('postModal').style.display = 'none';
+        }
+
+        function submitPost(event) {
+            event.preventDefault();
+            alert('Post created successfully!');
+            closeModal();
+        }
+
+        // Commerce functions
+        function addToCart(postId) {
+            alert(`Added item to cart! Post ID: ${postId}`);
+        }
+
+        function makeOffer(postId) {
+            const offer = prompt('Enter your offer amount:');
+            if (offer) {
+                alert(`Offer of $${offer} sent! Post ID: ${postId}`);
+            }
+        }
+
+        function deliverNow(postId) {
+            alert(`Arranging delivery for Post ID: ${postId}`);
+        }
+
+        function rentNow(postId) {
+            alert(`Booking rental for Post ID: ${postId}`);
+        }
+
+        function bookService(postId) {
+            alert(`Booking service for Post ID: ${postId}`);
+        }
+
+        // Social interaction functions
+        function toggleLike(postId) {
+            const btn = event.target.closest('.interaction-btn');
+            if (likedPosts.includes(postId)) {
+                // Unlike
+                likedPosts = likedPosts.filter(id => id !== postId);
+                btn.classList.remove('liked');
+                btn.innerHTML = '<span>🤍</span> Like';
+            } else {
+                // Like
+                likedPosts.push(postId);
+                btn.classList.add('liked');
+                btn.innerHTML = '<span>❤️</span> Like';
+            }
+        }
+
+        function toggleFavorite(postId) {
+            const btn = event.target.closest('.interaction-btn');
+            if (favoritedPosts.includes(postId)) {
+                // Remove from favorites
+                favoritedPosts = favoritedPosts.filter(id => id !== postId);
+                btn.classList.remove('favorited');
+                btn.innerHTML = '<span>☆</span> Favorite';
+            } else {
+                // Add to favorites
+                favoritedPosts.push(postId);
+                btn.classList.add('favorited');
+                btn.innerHTML = '<span>⭐</span> Favorite';
+            }
+        }
+
+        function showComments(postId) {
+            alert(`Comments for Post ID: ${postId}\n\nComment feature coming soon!`);
+        }
+
+        function sharePost(postId) {
+            alert(`Sharing Post ID: ${postId}`);
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            // Initialize bottom navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('postModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

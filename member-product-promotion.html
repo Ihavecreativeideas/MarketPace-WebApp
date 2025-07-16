@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Promotion - MarketPace Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-100px) rotate(180deg); opacity: 0.5; }
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 40px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b35, #ff9500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .promotion-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .package-selector {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .package-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .package-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .package-option.selected {
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .package-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .package-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ff6b35;
+        }
+
+        .package-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .package-features {
+            list-style: none;
+            padding: 0;
+        }
+
+        .package-features li {
+            padding: 6px 0;
+            font-size: 14px;
+            color: #e0e0e0;
+        }
+
+        .package-features li:before {
+            content: "✓";
+            color: #00ff88;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        }
+
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b35, #ff9500);
+            border: none;
+            color: white;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .savings-badge {
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .cost-breakdown {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .cost-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cost-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            font-size: 18px;
+            color: #ff6b35;
+        }
+
+        .platform-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .platform-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .facebook-badge {
+            background: linear-gradient(45deg, #1877f2, #42a5f5);
+        }
+
+        .instagram-badge {
+            background: linear-gradient(45deg, #e91e63, #f06292);
+        }
+
+        .marketplace-badge {
+            background: linear-gradient(45deg, #ff6b35, #ff9500);
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles"></div>
+    
+    <button class="back-btn" onclick="window.history.back()">
+        ← Back
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <h1>🛍️ Product Promotion</h1>
+            <p>Promote your products to local customers at affordable rates</p>
+        </div>
+
+        <div class="promotion-card">
+            <h3 style="margin-bottom: 20px; color: #ff6b35;">Select Promotion Package</h3>
+            
+            <div class="package-selector">
+                <div class="package-option" data-package="quick" onclick="selectPackage('quick')">
+                    <div class="package-header">
+                        <div class="package-name">Quick Boost</div>
+                        <div class="package-price">$5</div>
+                    </div>
+                    <div class="platform-badges">
+                        <span class="platform-badge marketplace-badge">MarketPace</span>
+                    </div>
+                    <ul class="package-features">
+                        <li>24-hour featured placement</li>
+                        <li>Local member notifications</li>
+                        <li>Priority in search results</li>
+                        <li>Community feed promotion</li>
+                    </ul>
+                </div>
+
+                <div class="package-option" data-package="featured" onclick="selectPackage('featured')">
+                    <div class="package-header">
+                        <div class="package-name">Featured Listing</div>
+                        <div class="package-price">$12 <span class="savings-badge">60% cheaper</span></div>
+                    </div>
+                    <div class="platform-badges">
+                        <span class="platform-badge marketplace-badge">MarketPace</span>
+                        <span class="platform-badge facebook-badge">Facebook</span>
+                    </div>
+                    <ul class="package-features">
+                        <li>Everything in Quick Boost</li>
+                        <li>Facebook Marketplace promotion</li>
+                        <li>Automatic "Deliver Now" button</li>
+                        <li>Cross-platform analytics</li>
+                        <li>Extended 3-day campaign</li>
+                    </ul>
+                </div>
+
+                <div class="package-option" data-package="premium" onclick="selectPackage('premium')">
+                    <div class="package-header">
+                        <div class="package-name">Premium Campaign</div>
+                        <div class="package-price">$25 <span class="savings-badge">70% cheaper</span></div>
+                    </div>
+                    <div class="platform-badges">
+                        <span class="platform-badge marketplace-badge">MarketPace</span>
+                        <span class="platform-badge facebook-badge">Facebook</span>
+                        <span class="platform-badge instagram-badge">Instagram</span>
+                    </div>
+                    <ul class="package-features">
+                        <li>Everything in Featured Listing</li>
+                        <li>Instagram Shopping integration</li>
+                        <li>Professional ad creative design</li>
+                        <li>7-day extended campaign</li>
+                        <li>Advanced targeting options</li>
+                        <li>ROI tracking and optimization</li>
+                    </ul>
+                </div>
+            </div>
+
+            <form id="promotion-form">
+                <div class="form-group">
+                    <label for="product-name">Product Name</label>
+                    <input type="text" id="product-name" name="product-name" placeholder="Enter your product name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-category">Category</label>
+                    <select id="product-category" name="product-category" required>
+                        <option value="">Select category</option>
+                        <option value="clothing">Clothing & Accessories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="home">Home & Garden</option>
+                        <option value="beauty">Beauty & Personal Care</option>
+                        <option value="sports">Sports & Outdoors</option>
+                        <option value="books">Books & Media</option>
+                        <option value="toys">Toys & Games</option>
+                        <option value="automotive">Automotive</option>
+                        <option value="health">Health & Wellness</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-price">Price</label>
+                    <input type="number" id="product-price" name="product-price" placeholder="Product price" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="target-location">Target Location</label>
+                    <input type="text" id="target-location" name="target-location" placeholder="e.g., Orange Beach, Alabama" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-description">Product Description</label>
+                    <textarea id="product-description" name="product-description" rows="3" placeholder="Describe your product and why customers should buy it..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-images">Product Images (URLs)</label>
+                    <input type="url" id="product-images" name="product-images" placeholder="https://example.com/product-image.jpg">
+                    <small style="color: rgba(255,255,255,0.7); font-size: 12px; margin-top: 4px; display: block;">
+                        Add your main product image URL for best results
+                    </small>
+                </div>
+
+                <div class="cost-breakdown" id="cost-breakdown">
+                    <div class="cost-item">
+                        <span>Package:</span>
+                        <span id="package-cost">Select a package</span>
+                    </div>
+                    <div class="cost-item">
+                        <span>Processing Fee:</span>
+                        <span>$0.30</span>
+                    </div>
+                    <div class="cost-item">
+                        <span>Total:</span>
+                        <span id="total-cost">$0.00</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn" id="promote-btn" onclick="startPromotion()" disabled>
+                    Select Package to Continue
+                </button>
+            </form>
+        </div>
+
+        <div class="promotion-card">
+            <h3 style="margin-bottom: 16px; color: #ff6b35;">Why Promote Through MarketPace?</h3>
+            <ul style="list-style: none; padding: 0;">
+                <li style="padding: 8px 0; color: #e0e0e0;">💰 60-70% cheaper than direct Facebook ads</li>
+                <li style="padding: 8px 0; color: #e0e0e0;">🎯 Hyper-local targeting to your area</li>
+                <li style="padding: 8px 0; color: #e0e0e0;">🚚 Automatic "Deliver Now" button integration</li>
+                <li style="padding: 8px 0; color: #e0e0e0;">📊 Cross-platform analytics tracking</li>
+                <li style="padding: 8px 0; color: #e0e0e0;">⚡ Instant campaign activation</li>
+                <li style="padding: 8px 0; color: #e0e0e0;">🛍️ Facebook Shop integration</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let selectedPackage = null;
+        const packages = {
+            quick: { name: 'Quick Boost', price: 5, platforms: ['MarketPace'] },
+            featured: { name: 'Featured Listing', price: 12, platforms: ['MarketPace', 'Facebook'] },
+            premium: { name: 'Premium Campaign', price: 25, platforms: ['MarketPace', 'Facebook', 'Instagram'] }
+        };
+
+        // Create floating particles
+        function createParticles() {
+            const particleContainer = document.querySelector('.floating-particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                particleContainer.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        function selectPackage(packageType) {
+            // Remove previous selection
+            document.querySelectorAll('.package-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // Select new package
+            document.querySelector(`[data-package="${packageType}"]`).classList.add('selected');
+            selectedPackage = packageType;
+
+            // Update cost breakdown
+            updateCostBreakdown();
+            
+            // Enable promote button
+            const promoteBtn = document.getElementById('promote-btn');
+            promoteBtn.disabled = false;
+            promoteBtn.textContent = `Start ${packages[packageType].name} - $${packages[packageType].price + 0.30}`;
+        }
+
+        function updateCostBreakdown() {
+            if (!selectedPackage) return;
+
+            const package = packages[selectedPackage];
+            const processingFee = 0.30;
+            const total = package.price + processingFee;
+
+            document.getElementById('package-cost').textContent = `$${package.price}`;
+            document.getElementById('total-cost').textContent = `$${total.toFixed(2)}`;
+        }
+
+        async function startPromotion() {
+            if (!selectedPackage) {
+                alert('Please select a promotion package first');
+                return;
+            }
+
+            const formData = {
+                productName: document.getElementById('product-name').value,
+                productCategory: document.getElementById('product-category').value,
+                productPrice: document.getElementById('product-price').value,
+                targetLocation: document.getElementById('target-location').value,
+                productDescription: document.getElementById('product-description').value,
+                productImages: document.getElementById('product-images').value,
+                package: selectedPackage,
+                packageDetails: packages[selectedPackage]
+            };
+
+            // Validate required fields
+            if (!formData.productName || !formData.productCategory || !formData.productPrice || 
+                !formData.targetLocation || !formData.productDescription) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            try {
+                // Process payment
+                const paymentResponse = await fetch('/api/product-promotion/create-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        amount: packages[selectedPackage].price + 0.30,
+                        packageType: selectedPackage,
+                        productName: formData.productName,
+                        productPrice: formData.productPrice
+                    })
+                });
+
+                const paymentData = await paymentResponse.json();
+                
+                if (paymentData.success) {
+                    // Redirect to Stripe Checkout
+                    window.location.href = paymentData.checkoutUrl;
+                } else {
+                    alert('Payment processing failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error processing promotion:', error);
+                alert('Failed to start promotion campaign');
+            }
+        }
+
+        // Handle successful payment return
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === 'true') {
+            showSuccessMessage(urlParams.get('campaign_id'));
+        }
+
+        function showSuccessMessage(campaignId) {
+            alert(`🎉 Product promotion campaign started!\n\nCampaign ID: ${campaignId}\nYour product is now being promoted to local customers!`);
+        }
+    </script>
+</body>
+</html>

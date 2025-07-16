@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - MarketPace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0d0221 0%, #1a0845 50%, #2d1b69 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* Floating Particles */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .particle:nth-child(odd) {
+            background: rgba(0, 255, 255, 0.3);
+            animation: float 6s infinite linear;
+        }
+
+        .particle:nth-child(even) {
+            background: rgba(157, 78, 221, 0.3);
+            animation: float 8s infinite reverse;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            min-height: calc(100vh - 100px);
+        }
+
+        /* Cart Items Section */
+        .cart-section {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #00ffff, #9d4edd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cart-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #00ffff, #9d4edd);
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .item-seller {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .item-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #00ffff;
+        }
+
+        .item-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .item-size-selector {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .availability-status {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .available {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .limited {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        .unavailable {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .remove-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        /* Checkout Section */
+        .checkout-section {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+
+        .checkout-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .delivery-window {
+            margin-bottom: 25px;
+        }
+
+        .delivery-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #00ffff;
+        }
+
+        .window-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .window-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .window-option:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .window-option.selected {
+            border-color: #00ffff;
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .urgent-delivery {
+            background: rgba(255, 107, 107, 0.1);
+            border: 2px solid rgba(255, 107, 107, 0.3);
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .urgent-title {
+            font-weight: 600;
+            color: #ff6b6b;
+            margin-bottom: 5px;
+        }
+
+        .urgent-fee {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .urgent-checkbox {
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .cost-breakdown {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 20px;
+            margin-bottom: 25px;
+        }
+
+        .cost-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .cost-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .cost-value {
+            font-weight: 600;
+        }
+
+        .total-row {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #00ffff;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00ffff, #9d4edd);
+            border: none;
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4);
+        }
+
+        .checkout-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .empty-cart-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart-text {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .continue-shopping {
+            background: linear-gradient(135deg, #00ffff, #9d4edd);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .continue-shopping:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+
+            .cart-section,
+            .checkout-section {
+                padding: 20px;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .item-actions {
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .window-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Particles -->
+    <script>
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDelay = Math.random() * 10 + 's';
+            particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
+            document.body.appendChild(particle);
+        }
+    </script>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">MarketPace</div>
+            <a href="/community" class="back-btn">
+                ← Back to Community
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Cart Items Section -->
+        <div class="cart-section">
+            <h1 class="section-title">🛒 Shopping Cart</h1>
+            
+            <div id="cartItems">
+                <!-- Cart items will be loaded here -->
+            </div>
+            
+            <div id="emptyCart" class="empty-cart" style="display: none;">
+                <div class="empty-cart-icon">🛒</div>
+                <div class="empty-cart-text">Your cart is empty</div>
+                <a href="/community" class="continue-shopping">Continue Shopping</a>
+            </div>
+        </div>
+
+        <!-- Checkout Section -->
+        <div class="checkout-section">
+            <h2 class="checkout-title">Checkout</h2>
+            
+            <!-- Optimized Route Display -->
+            <div class="delivery-window" id="routeDisplay" style="display: none;">
+                <h3 class="delivery-title">🗺️ Optimized Delivery Route</h3>
+                <div id="routeSteps" style="max-height: 200px; overflow-y: auto; background: rgba(0, 0, 0, 0.2); border-radius: 8px; padding: 10px;">
+                    <!-- Route steps will be displayed here -->
+                </div>
+            </div>
+
+            <!-- Delivery Window Selection -->
+            <div class="delivery-window">
+                <h3 class="delivery-title">🕐 Select Delivery Window</h3>
+                <div class="window-options">
+                    <div class="window-option" data-window="9-12" onclick="selectWindow(this)">
+                        9:00 AM - 12:00 PM
+                    </div>
+                    <div class="window-option" data-window="12-3" onclick="selectWindow(this)">
+                        12:00 PM - 3:00 PM
+                    </div>
+                    <div class="window-option" data-window="3-6" onclick="selectWindow(this)">
+                        3:00 PM - 6:00 PM
+                    </div>
+                    <div class="window-option" data-window="6-9" onclick="selectWindow(this)">
+                        6:00 PM - 9:00 PM
+                    </div>
+                </div>
+            </div>
+
+            <!-- Urgent Delivery Option -->
+            <div class="urgent-delivery">
+                <div class="urgent-title">⚡ Urgent Delivery</div>
+                <div class="urgent-fee">Additional $10 fee for priority delivery</div>
+                <div class="urgent-checkbox">
+                    <input type="checkbox" id="urgentDelivery" onchange="updateCosts()">
+                    <label for="urgentDelivery">Rush my order</label>
+                </div>
+            </div>
+
+            <!-- Cost Breakdown -->
+            <div class="cost-breakdown">
+                <div class="cost-row">
+                    <span class="cost-label">Subtotal:</span>
+                    <span class="cost-value" id="subtotal">$0.00</span>
+                </div>
+                <div class="cost-row">
+                    <span class="cost-label">Platform Fee (5%):</span>
+                    <span class="cost-value" id="platformFee">$0.00</span>
+                </div>
+                <div class="cost-row">
+                    <span class="cost-label">Marketplace Protection Fee™:</span>
+                    <span class="cost-value" id="protectionFee">$0.50</span>
+                </div>
+                <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-left: 20px; margin-top: -5px; margin-bottom: 10px;">
+                    🛡️ Damage protection up to $100 per item
+                </div>
+                <div class="cost-row">
+                    <span class="cost-label">Delivery Fee:</span>
+                    <span class="cost-value" id="deliveryFee">$0.00</span>
+                </div>
+                <div class="cost-row">
+                    <span class="cost-label">Large Item Fee:</span>
+                    <span class="cost-value" id="largeItemFee">$0.00</span>
+                </div>
+                <div class="cost-row">
+                    <span class="cost-label">Mileage Fee:</span>
+                    <span class="cost-value" id="mileageFee">$0.00</span>
+                </div>
+                <div id="mileageBreakdown" style="font-size: 12px; color: rgba(255, 255, 255, 0.6); margin-left: 20px; margin-top: -5px; margin-bottom: 10px;">
+                    8.5 miles × $0.50 = $4.25
+                </div>
+                <div class="cost-row" id="urgentFeeRow" style="display: none;">
+                    <span class="cost-label">Urgent Fee:</span>
+                    <span class="cost-value" id="urgentFeeValue">$10.00</span>
+                </div>
+                <div class="cost-row total-row">
+                    <span class="cost-label">Total:</span>
+                    <span class="cost-value" id="totalCost">$0.00</span>
+                </div>
+            </div>
+
+            <!-- Demo Route Type Buttons -->
+            <div style="margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                <div style="font-size: 14px; font-weight: bold; margin-bottom: 10px; color: #00ffff;">Demo Different Route Types:</div>
+                <button onclick="loadStandardItems()" style="padding: 8px 15px; margin: 5px; background: rgba(0,150,255,0.8); color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Standard Mixed Route
+                </button>
+                <button onclick="loadShopDeliveryItems()" style="padding: 8px 15px; margin: 5px; background: rgba(255,150,0,0.8); color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Shop Delivery Day Route
+                </button>
+                <button onclick="showDriverInsuranceDemo()" style="padding: 8px 15px; margin: 5px; background: rgba(34,197,94,0.8); color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Driver Insurance Demo
+                </button>
+                <button onclick="showFeeBreakdownDemo()" style="padding: 8px 15px; margin: 5px; background: rgba(139,92,246,0.8); color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Fee Breakdown Demo
+                </button>
+                <button onclick="clearCart()" style="padding: 8px 15px; margin: 5px; background: rgba(255,50,50,0.8); color: white; border: none; border-radius: 5px; cursor: pointer;">
+                    Clear Cart
+                </button>
+            </div>
+
+            <!-- Checkout Button -->
+            <button class="checkout-btn" id="checkoutBtn" onclick="proceedToCheckout()">
+                Proceed to Payment
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Load shopping cart data from localStorage
+        let cartData = JSON.parse(localStorage.getItem('marketplaceCart')) || {
+            items: [],
+            selectedWindow: null,
+            urgentDelivery: false,
+            deliveryDistance: 8.5,
+            deliveryRoute: null
+        };
+
+        // Sample addresses for route optimization demo
+        const sampleAddresses = {
+            sellers: [
+                { name: "Electronics Store", address: "123 Main St, Orange Beach, AL", lat: 30.2810, lng: -87.6134, type: "individual" },
+                { name: "Vintage Boutique", address: "456 Gulf Shores Pkwy, Gulf Shores, AL", lat: 30.2468, lng: -87.6725, type: "individual" },
+                { name: "Outdoor Gear Co", address: "789 Beach Blvd, Orange Beach, AL", lat: 30.2751, lng: -87.6089, type: "individual" },
+                { name: "Art Gallery", address: "321 Cotton Bayou Dr, Orange Beach, AL", lat: 30.2699, lng: -87.6156, type: "individual" },
+                { name: "Beach Shop Pro", address: "111 Coastal Hwy, Orange Beach, AL", lat: 30.2801, lng: -87.6201, type: "shop", deliveryDay: true },
+                { name: "Local Market Plus", address: "222 Marina Rd, Orange Beach, AL", lat: 30.2745, lng: -87.6167, type: "shop", deliveryDay: true }
+            ],
+            buyers: [
+                { name: "Customer A", address: "555 Phoenix Dr, Orange Beach, AL", lat: 30.2834, lng: -87.6221 },
+                { name: "Customer B", address: "777 Canal Rd, Orange Beach, AL", lat: 30.2756, lng: -87.6044 },
+                { name: "Customer C", address: "888 Wolf Bay Dr, Orange Beach, AL", lat: 30.2912, lng: -87.6378 },
+                { name: "Customer D", address: "999 Perdido Beach Blvd, Orange Beach, AL", lat: 30.2723, lng: -87.6089 }
+            ],
+            driverStart: { name: "Driver Hub", address: "200 Canal Rd, Orange Beach, AL", lat: 30.2789, lng: -87.6123 }
+        };
+
+        // Initialize cart
+        function initializeCart() {
+            displayCartItems();
+            updateCosts();
+            updateCartBadge();
+        }
+
+        // Display cart items
+        function displayCartItems() {
+            const cartContainer = document.getElementById('cartItems');
+            const emptyCart = document.getElementById('emptyCart');
+            
+            if (cartData.items.length === 0) {
+                cartContainer.style.display = 'none';
+                emptyCart.style.display = 'block';
+                return;
+            }
+
+            cartContainer.style.display = 'block';
+            emptyCart.style.display = 'none';
+            
+            cartContainer.innerHTML = cartData.items.map(item => `
+                <div class="cart-item" data-item-id="${item.id}">
+                    <img src="${item.image}" alt="${item.name}" class="item-image">
+                    <div class="item-details">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-seller">Sold by ${item.seller}</div>
+                        <div class="item-price">$${item.price.toFixed(2)}</div>
+                    </div>
+                    <div class="item-actions">
+                        <select class="item-size-selector" onchange="updateItemSize(${item.id}, this.value)">
+                            <option value="small" ${item.size === 'small' ? 'selected' : ''}>Small</option>
+                            <option value="medium" ${item.size === 'medium' ? 'selected' : ''}>Medium</option>
+                            <option value="large" ${item.size === 'large' ? 'selected' : ''}>Large (+$25)</option>
+                        </select>
+                        <div class="availability-status ${item.availabilityStatus}">
+                            ${getAvailabilityText(item.availabilityStatus)}
+                        </div>
+                        <button class="remove-btn" onclick="removeItem(${item.id})">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get availability text
+        function getAvailabilityText(status) {
+            switch(status) {
+                case 'available': return '✓ Available';
+                case 'limited': return '⚠ Limited Stock';
+                case 'unavailable': return '✗ Out of Stock';
+                default: return 'Unknown';
+            }
+        }
+
+        // Update item size
+        function updateItemSize(itemId, newSize) {
+            const item = cartData.items.find(i => i.id === itemId);
+            if (item) {
+                item.size = newSize;
+                localStorage.setItem('marketplaceCart', JSON.stringify(cartData));
+                updateCosts();
+                
+                // Show notification for large items
+                if (newSize === 'large') {
+                    showNotification('Large item fee (+$25) will be added to delivery cost', 'warning');
+                }
+            }
+        }
+
+        // Remove item from cart
+        function removeItem(itemId) {
+            cartData.items = cartData.items.filter(item => item.id !== itemId);
+            localStorage.setItem('marketplaceCart', JSON.stringify(cartData));
+            displayCartItems();
+            updateCosts();
+            updateCartBadge();
+            showNotification('Item removed from cart', 'info');
+        }
+
+        // Select delivery window
+        function selectWindow(element) {
+            // Remove selection from all windows
+            document.querySelectorAll('.window-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Select clicked window
+            element.classList.add('selected');
+            cartData.selectedWindow = element.dataset.window;
+            
+            // Enable checkout if items exist
+            updateCheckoutButton();
+        }
+
+        // Update costs
+        function updateCosts() {
+            const subtotal = cartData.items.reduce((sum, item) => sum + item.price, 0);
+            const platformFee = calculatePlatformFee(subtotal);
+            const marketplaceProtectionFee = 0.50; // Marketplace Protection Fee™
+            const deliveryFee = calculateDeliveryFee();
+            const largeItemFee = calculateLargeItemFee();
+            const mileageFee = calculateMileageFee();
+            const urgentFee = cartData.urgentDelivery ? 10.00 : 0;
+            
+            const total = subtotal + platformFee + marketplaceProtectionFee + deliveryFee + largeItemFee + mileageFee + urgentFee;
+
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('platformFee').textContent = `$${platformFee.toFixed(2)}`;
+            document.getElementById('protectionFee').textContent = `$${marketplaceProtectionFee.toFixed(2)}`;
+            document.getElementById('deliveryFee').textContent = `$${deliveryFee.toFixed(2)}`;
+            document.getElementById('largeItemFee').textContent = `$${largeItemFee.toFixed(2)}`;
+            document.getElementById('mileageFee').textContent = `$${mileageFee.toFixed(2)}`;
+            document.getElementById('totalCost').textContent = `$${total.toFixed(2)}`;
+            
+            // Update mileage breakdown display
+            updateMileageBreakdown();
+            displayEstimatedPayouts();
+            
+            // Show/hide urgent fee
+            const urgentFeeRow = document.getElementById('urgentFeeRow');
+            if (cartData.urgentDelivery) {
+                urgentFeeRow.style.display = 'flex';
+            } else {
+                urgentFeeRow.style.display = 'none';
+            }
+        }
+
+        // Calculate platform fee (5% of subtotal)
+        function calculatePlatformFee(subtotal) {
+            return subtotal * 0.05;
+        }
+
+        // Update mileage breakdown display
+        function updateMileageBreakdown() {
+            const individualFees = cartData.individualMileageFees || [];
+            
+            let breakdownText = '';
+            
+            if (individualFees.length > 0) {
+                const isShopDelivery = individualFees[0]?.isShopDeliveryDay;
+                
+                if (isShopDelivery) {
+                    // Shop delivery day - no mileage fees
+                    breakdownText = '<div style="font-size: 11px; line-height: 1.3;">';
+                    breakdownText += `<strong>🏪 Shop Delivery Day Route</strong><br>`;
+                    breakdownText += `<div style="margin: 4px 0; padding: 6px; background: rgba(0,255,255,0.1); border: 1px solid rgba(0,255,255,0.3); border-radius: 5px;">`;
+                    breakdownText += `<div style="color: #00ffff; font-weight: bold;">Exclusive Shop Route - ${individualFees[0].shopName}</div>`;
+                    breakdownText += `<div style="font-size: 10px; color: rgba(255,255,255,0.8); margin-top: 2px;">`;
+                    breakdownText += `• No other deliveries on this route<br>`;
+                    breakdownText += `• Higher pickup/dropoff fees to compensate for lack of multiple tips<br>`;
+                    breakdownText += `• No mileage charges - pricing is flat rate per delivery`;
+                    breakdownText += `</div></div>`;
+                    breakdownText += `<div style="margin-top: 4px; font-weight: bold; color: #00ffff;">Mileage Fee: $0.00 (Shop Delivery Day)</div>`;
+                    breakdownText += '</div>';
+                } else {
+                    // Standard mixed route with individual mileage calculations
+                    breakdownText = '<div style="font-size: 11px; line-height: 1.3;">';
+                    breakdownText += '<strong>📍 Individual Delivery Mileage:</strong><br>';
+                    breakdownText += `<div style="font-size: 10px; color: rgba(255,255,255,0.7); margin-bottom: 4px; font-style: italic;">`;
+                    breakdownText += `💡 $4 pickup fee includes travel to pickup location - mileage starts from pickup`;
+                    breakdownText += `</div>`;
+                    
+                    individualFees.forEach((fee, index) => {
+                        breakdownText += `<div style="margin: 2px 0; padding: 2px; background: rgba(255,255,255,0.05); border-radius: 3px;">`;
+                        breakdownText += `${fee.itemName}: ${fee.miles} miles × $0.50 = $${fee.baseFee.toFixed(2)}`;
+                        
+                        if (fee.premiumFee > 0) {
+                            const extraMiles = Math.max(0, fee.miles - 15);
+                            breakdownText += `<br>&nbsp;&nbsp;&nbsp;+ ${extraMiles} miles beyond 15 × $1.00 = $${fee.premiumFee.toFixed(2)}`;
+                        }
+                        
+                        breakdownText += `<br>&nbsp;&nbsp;&nbsp;<strong>Subtotal: $${fee.totalFee.toFixed(2)}</strong>`;
+                        breakdownText += `</div>`;
+                    });
+                    
+                    const totalFee = individualFees.reduce((sum, fee) => sum + fee.totalFee, 0);
+                    breakdownText += `<div style="margin-top: 4px; font-weight: bold; color: #00ffff;">Total Mileage Fee: $${totalFee.toFixed(2)}</div>`;
+                    breakdownText += '</div>';
+                }
+            } else {
+                breakdownText = 'No items in cart';
+            }
+            
+            document.getElementById('mileageBreakdown').innerHTML = breakdownText;
+            
+            // Show route display if items exist
+            const routeDisplay = document.getElementById('routeDisplay');
+            
+            if (cartData.items.length > 0 && cartData.deliveryRoute) {
+                routeDisplay.style.display = 'block';
+                displayRouteSteps();
+            } else {
+                routeDisplay.style.display = 'none';
+            }
+        }
+
+        // Display route optimization steps with buyer-specific charging
+        function displayRouteSteps() {
+            const routeSteps = document.getElementById('routeSteps');
+            if (!cartData.deliveryRoute || !cartData.deliveryRoute.route) return;
+
+            const isShopDelivery = cartData.deliveryRoute.isShopDeliveryDay;
+            
+            let stepsHTML = '<div style="font-size: 12px; color: rgba(255, 255, 255, 0.8);">';
+            stepsHTML += `<div style="margin-bottom: 8px;"><strong>🚗 Driver starts at:</strong> ${sampleAddresses.driverStart.name}</div>`;
+            
+            if (isShopDelivery) {
+                stepsHTML += `<div style="margin-bottom: 8px; padding: 6px; background: rgba(0,255,255,0.1); border: 1px solid rgba(0,255,255,0.3); border-radius: 5px;">`;
+                stepsHTML += `<div style="color: #00ffff; font-weight: bold;">🏪 Exclusive Shop Delivery Day Route</div>`;
+                stepsHTML += `<div style="font-size: 10px; color: rgba(255,255,255,0.8);">No other deliveries • $4 pickup + $2 per dropoff</div>`;
+                stepsHTML += `</div>`;
+            }
+            
+            // Map items to their pickup/dropoff locations for charging visualization
+            const itemLocationMap = {};
+            cartData.items.forEach((item, index) => {
+                const sellerIndex = index % sampleAddresses.sellers.length;
+                const buyerIndex = index % sampleAddresses.buyers.length;
+                itemLocationMap[item.id] = {
+                    pickup: sampleAddresses.sellers[sellerIndex].name,
+                    dropoff: sampleAddresses.buyers[buyerIndex].name
+                };
+            });
+            
+            cartData.deliveryRoute.route.forEach((step, index) => {
+                const icon = step.type === 'pickup' ? '📦' : '🏠';
+                const action = step.type === 'pickup' ? 'Pick up from' : 'Deliver to';
+                const items = step.items.map(item => item.itemName || 'Item').join(', ');
+                
+                // Pricing information based on route type
+                let pricingInfo = '';
+                if (isShopDelivery) {
+                    if (step.type === 'pickup') {
+                        pricingInfo = `<br><span style="color: #00ff00; font-size: 10px;">💰 Driver Payment: $4.00 pickup fee</span>`;
+                    } else {
+                        pricingInfo = `<br><span style="color: #00ff00; font-size: 10px;">💰 Driver Payment: $2.00 dropoff fee per delivery</span>`;
+                    }
+                } else {
+                    // Standard route - show driver payments and mileage charges
+                    let driverPayment = '';
+                    if (step.type === 'pickup') {
+                        driverPayment = `<br><span style="color: #00ff00; font-size: 10px;">💰 Driver Payment: $4.00 pickup fee</span>`;
+                    } else if (step.type === 'dropoff') {
+                        driverPayment = `<br><span style="color: #00ff00; font-size: 10px;">💰 Driver Payment: $2.00 dropoff fee</span>`;
+                    }
+                    
+                    let chargingInfo = '';
+                    if (cartData.individualMileageFees) {
+                        const chargedBuyers = [];
+                        
+                        cartData.individualMileageFees.forEach(fee => {
+                            const itemLocation = itemLocationMap[fee.itemId];
+                            if (itemLocation) {
+                                // Find pickup and dropoff step indices for this item
+                                const pickupStepIndex = cartData.deliveryRoute.route.findIndex(s => 
+                                    s.type === 'pickup' && s.location.name === itemLocation.pickup
+                                );
+                                const dropoffStepIndex = cartData.deliveryRoute.route.findIndex(s => 
+                                    s.type === 'dropoff' && s.location.name === itemLocation.dropoff
+                                );
+                                
+                                // Check if this step is within the charging range for this buyer
+                                if (index >= pickupStepIndex && index <= dropoffStepIndex) {
+                                    chargedBuyers.push(fee.itemName);
+                                }
+                            }
+                        });
+                        
+                        if (chargedBuyers.length > 0) {
+                            chargingInfo = `<br><span style="color: #00ffff; font-size: 10px;">💰 Mileage charged to: ${chargedBuyers.join(', ')}</span>`;
+                        }
+                    }
+                    pricingInfo = driverPayment + chargingInfo;
+                }
+                
+                stepsHTML += `
+                    <div style="margin-bottom: 6px; padding: 4px; background: rgba(255, 255, 255, 0.05); border-radius: 4px;">
+                        <div><strong>${icon} Step ${index + 1}:</strong> ${action} ${step.location.name}</div>
+                        <div style="font-size: 11px; color: rgba(255, 255, 255, 0.6);">
+                            ${step.distance.toFixed(1)} miles • Items: ${items}${pricingInfo}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            stepsHTML += `<div style="margin-top: 8px; font-weight: bold; color: #00ffff;">
+                Total Route Distance: ${cartData.deliveryRoute.totalMiles} miles
+            </div>`;
+            
+            if (isShopDelivery) {
+                stepsHTML += `<div style="margin-top: 4px; font-size: 10px; color: rgba(255, 255, 255, 0.7);">
+                    🏪 Shop delivery day: higher pickup/dropoff fees compensate for lack of multiple tips between buyers/sellers
+                </div>`;
+            } else {
+                stepsHTML += `<div style="margin-top: 4px; font-size: 10px; color: rgba(255, 255, 255, 0.7);">
+                    💡 Driver earnings: $4 pickup + $2 dropoff + $0.50/mile + 100% tips + appreciation bonuses
+                </div>`;
+            }
+            
+            // Add driver insurance and protection information
+            stepsHTML += `<div style="margin-top: 6px; padding: 6px; background: rgba(0,255,255,0.1); border: 1px solid rgba(0,255,255,0.3); border-radius: 5px;">
+                <div style="color: #00ffff; font-weight: bold; font-size: 11px;">🛡️ Driver Accountability Coverage</div>
+                <div style="font-size: 10px; color: rgba(255,255,255,0.8); line-height: 1.3;">
+                    • Drivers pay $3.75/month Driver Accountability Coverage<br>
+                    • Required to take before/after photos of all items<br>
+                    • Good drivers get appreciation bonuses for avoiding damages<br>
+                    • Marketplace Protection Fund™ covers buyer damages up to $100/item
+                </div>
+            </div>`;
+            
+            stepsHTML += '</div>';
+            
+            routeSteps.innerHTML = stepsHTML;
+        }
+
+        // Calculate delivery fee based on route type
+        function calculateDeliveryFee() {
+            if (cartData.items.length === 0) return 0;
+            
+            const routeData = cartData.deliveryRoute;
+            if (!routeData) return 5.00; // Default base fee
+            
+            if (routeData.isShopDeliveryDay) {
+                // Shop delivery day pricing: $4 pickup + $4 per dropoff
+                const pickupFee = 4.00; // Single pickup from shop
+                const dropoffCount = cartData.items.length; // One dropoff per item
+                const dropoffFees = dropoffCount * 2.00;
+                
+                return pickupFee + dropoffFees;
+            } else {
+                // Standard mixed route pricing
+                return 5.00; // Base delivery fee
+            }
+        }
+
+        // Calculate large item fee
+        function calculateLargeItemFee() {
+            const largeItems = cartData.items.filter(item => item.size === 'large');
+            return largeItems.length * 25.00;
+        }
+
+        // Calculate distance between two coordinates (Haversine formula)
+        function calculateDistance(lat1, lng1, lat2, lng2) {
+            const R = 3959; // Earth's radius in miles
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                     Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                     Math.sin(dLng/2) * Math.sin(dLng/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // Determine route type and pricing structure
+        function determineRouteType() {
+            // Check if all items are from shops with delivery days
+            const deliveryStops = cartData.items.map((item, index) => {
+                const sellerIndex = index % sampleAddresses.sellers.length;
+                return {
+                    itemId: item.id,
+                    itemName: item.name,
+                    seller: sampleAddresses.sellers[sellerIndex]
+                };
+            });
+
+            const shopDeliveryItems = deliveryStops.filter(stop => 
+                stop.seller.type === 'shop' && stop.seller.deliveryDay
+            );
+
+            // If all items are from the same shop with delivery day, use shop delivery route
+            if (shopDeliveryItems.length === cartData.items.length) {
+                const uniqueShops = [...new Set(shopDeliveryItems.map(item => item.seller.name))];
+                if (uniqueShops.length === 1) {
+                    return {
+                        type: 'shop_delivery_day',
+                        shop: shopDeliveryItems[0].seller,
+                        pricing: { pickup: 4.00, dropoff: 2.00 }
+                    };
+                }
+            }
+
+            // Default to standard mixed route
+            return {
+                type: 'standard_mixed',
+                pricing: { pickup: 4.00, dropoff: 2.00, mileage: 0.50, premium: 1.00 }
+            };
+        }
+
+        // Optimize delivery route using nearest neighbor algorithm
+        function optimizeDeliveryRoute() {
+            if (cartData.items.length === 0) return { totalMiles: 0, route: [], routeType: null };
+
+            const routeType = determineRouteType();
+            
+            if (routeType.type === 'shop_delivery_day') {
+                return optimizeShopDeliveryRoute(routeType);
+            } else {
+                return optimizeStandardRoute(routeType);
+            }
+        }
+
+        // Optimize shop delivery day route (exclusive shop route)
+        function optimizeShopDeliveryRoute(routeType) {
+            const route = [];
+            let currentPosition = sampleAddresses.driverStart;
+            let totalMiles = 0;
+
+            // Single pickup from the shop
+            const shopLocation = routeType.shop;
+            const distanceToShop = calculateDistance(
+                currentPosition.lat, currentPosition.lng,
+                shopLocation.lat, shopLocation.lng
+            );
+
+            totalMiles += distanceToShop;
+            route.push({
+                type: 'pickup',
+                location: shopLocation,
+                distance: distanceToShop,
+                items: cartData.items.map(item => ({ itemId: item.id, itemName: item.name })),
+                pricing: 'shop_delivery_day'
+            });
+
+            currentPosition = shopLocation;
+
+            // Multiple dropoffs to buyers (optimized order)
+            const dropoffLocations = cartData.items.map((item, index) => {
+                const buyerIndex = index % sampleAddresses.buyers.length;
+                return {
+                    location: sampleAddresses.buyers[buyerIndex],
+                    item: item
+                };
+            });
+
+            // Use nearest neighbor for dropoffs
+            const uniqueDropoffs = [...new Set(dropoffLocations.map(d => d.location.name))]
+                .map(name => dropoffLocations.find(d => d.location.name === name).location);
+
+            let remainingDropoffs = [...uniqueDropoffs];
+
+            while (remainingDropoffs.length > 0) {
+                let nearestIndex = 0;
+                let shortestDistance = calculateDistance(
+                    currentPosition.lat, currentPosition.lng,
+                    remainingDropoffs[0].lat, remainingDropoffs[0].lng
+                );
+
+                for (let i = 1; i < remainingDropoffs.length; i++) {
+                    const distance = calculateDistance(
+                        currentPosition.lat, currentPosition.lng,
+                        remainingDropoffs[i].lat, remainingDropoffs[i].lng
+                    );
+                    if (distance < shortestDistance) {
+                        shortestDistance = distance;
+                        nearestIndex = i;
+                    }
+                }
+
+                const nextDropoff = remainingDropoffs[nearestIndex];
+                totalMiles += shortestDistance;
+                
+                const dropoffItems = dropoffLocations
+                    .filter(d => d.location.name === nextDropoff.name)
+                    .map(d => ({ itemId: d.item.id, itemName: d.item.name }));
+
+                route.push({
+                    type: 'dropoff',
+                    location: nextDropoff,
+                    distance: shortestDistance,
+                    items: dropoffItems,
+                    pricing: 'shop_delivery_day'
+                });
+
+                currentPosition = nextDropoff;
+                remainingDropoffs.splice(nearestIndex, 1);
+            }
+
+            return { 
+                totalMiles: Math.round(totalMiles * 100) / 100, 
+                route, 
+                routeType: routeType,
+                isShopDeliveryDay: true
+            };
+        }
+
+        // Optimize standard mixed route (original algorithm)
+        function optimizeStandardRoute(routeType) {
+            const route = [];
+            let currentPosition = sampleAddresses.driverStart;
+            let totalMiles = 0;
+
+            // Create pickup/dropoff pairs for each item
+            const deliveryStops = cartData.items.map((item, index) => {
+                const sellerIndex = index % sampleAddresses.sellers.length;
+                const buyerIndex = index % sampleAddresses.buyers.length;
+                
+                return {
+                    itemId: item.id,
+                    itemName: item.name,
+                    pickup: sampleAddresses.sellers[sellerIndex],
+                    dropoff: sampleAddresses.buyers[buyerIndex]
+                };
+            });
+
+            // Collect all unique pickup locations
+            const pickupLocations = [...new Set(deliveryStops.map(stop => stop.pickup.name))]
+                .map(name => deliveryStops.find(stop => stop.pickup.name === name).pickup);
+
+            // Route optimization: Visit all pickups first, then all dropoffs
+            let remainingPickups = [...pickupLocations];
+            let remainingDropoffs = [];
+
+            // Phase 1: Collect all items (pickups)
+            while (remainingPickups.length > 0) {
+                let nearestIndex = 0;
+                let shortestDistance = calculateDistance(
+                    currentPosition.lat, currentPosition.lng,
+                    remainingPickups[0].lat, remainingPickups[0].lng
+                );
+
+                for (let i = 1; i < remainingPickups.length; i++) {
+                    const distance = calculateDistance(
+                        currentPosition.lat, currentPosition.lng,
+                        remainingPickups[i].lat, remainingPickups[i].lng
+                    );
+                    if (distance < shortestDistance) {
+                        shortestDistance = distance;
+                        nearestIndex = i;
+                    }
+                }
+
+                const nextPickup = remainingPickups[nearestIndex];
+                totalMiles += shortestDistance;
+                route.push({
+                    type: 'pickup',
+                    location: nextPickup,
+                    distance: shortestDistance,
+                    items: deliveryStops.filter(stop => stop.pickup.name === nextPickup.name),
+                    pricing: 'standard'
+                });
+
+                const pickupDropoffs = deliveryStops
+                    .filter(stop => stop.pickup.name === nextPickup.name)
+                    .map(stop => stop.dropoff);
+                remainingDropoffs.push(...pickupDropoffs);
+
+                currentPosition = nextPickup;
+                remainingPickups.splice(nearestIndex, 1);
+            }
+
+            // Phase 2: Deliver all items (dropoffs)
+            const uniqueDropoffs = [...new Set(remainingDropoffs.map(d => d.name))]
+                .map(name => remainingDropoffs.find(d => d.name === name));
+
+            while (uniqueDropoffs.length > 0) {
+                let nearestIndex = 0;
+                let shortestDistance = calculateDistance(
+                    currentPosition.lat, currentPosition.lng,
+                    uniqueDropoffs[0].lat, uniqueDropoffs[0].lng
+                );
+
+                for (let i = 1; i < uniqueDropoffs.length; i++) {
+                    const distance = calculateDistance(
+                        currentPosition.lat, currentPosition.lng,
+                        uniqueDropoffs[i].lat, uniqueDropoffs[i].lng
+                    );
+                    if (distance < shortestDistance) {
+                        shortestDistance = distance;
+                        nearestIndex = i;
+                    }
+                }
+
+                const nextDropoff = uniqueDropoffs[nearestIndex];
+                totalMiles += shortestDistance;
+                route.push({
+                    type: 'dropoff',
+                    location: nextDropoff,
+                    distance: shortestDistance,
+                    items: deliveryStops.filter(stop => stop.dropoff.name === nextDropoff.name),
+                    pricing: 'standard'
+                });
+
+                currentPosition = nextDropoff;
+                uniqueDropoffs.splice(nearestIndex, 1);
+            }
+
+            return { 
+                totalMiles: Math.round(totalMiles * 100) / 100, 
+                route, 
+                routeType: routeType,
+                isShopDeliveryDay: false
+            };
+        }
+
+        // Calculate individual buyer mileage fees based on their specific delivery portion
+        function calculateIndividualMileageFees() {
+            if (cartData.items.length === 0) return [];
+
+            const routeData = optimizeDeliveryRoute();
+            cartData.deliveryRoute = routeData;
+            
+            const buyerMileageFees = [];
+            
+            if (routeData.isShopDeliveryDay) {
+                // Shop delivery day: No mileage fees - pricing is $4 pickup + $2 per dropoff
+                cartData.items.forEach((item, index) => {
+                    buyerMileageFees.push({
+                        itemId: item.id,
+                        itemName: item.name,
+                        miles: 0,
+                        baseFee: 0,
+                        premiumFee: 0,
+                        totalFee: 0,
+                        isShopDeliveryDay: true,
+                        shopName: routeData.routeType.shop.name
+                    });
+                });
+            } else {
+                // Standard mixed route: Calculate individual mileage portions
+                cartData.items.forEach((item, index) => {
+                    const sellerIndex = index % sampleAddresses.sellers.length;
+                    const buyerIndex = index % sampleAddresses.buyers.length;
+                    
+                    const sellerLocation = sampleAddresses.sellers[sellerIndex];
+                    const buyerLocation = sampleAddresses.buyers[buyerIndex];
+                    
+                    // Find the route step where this seller pickup occurs
+                    const pickupStepIndex = routeData.route.findIndex(step => 
+                        step.type === 'pickup' && step.location.name === sellerLocation.name
+                    );
+                    
+                    // Find the route step where this buyer dropoff occurs
+                    const dropoffStepIndex = routeData.route.findIndex(step => 
+                        step.type === 'dropoff' && step.location.name === buyerLocation.name
+                    );
+                    
+                    if (pickupStepIndex === -1 || dropoffStepIndex === -1) return;
+                    
+                    // Calculate mileage from pickup location to buyer dropoff (pickup fee covers initial travel)
+                    let totalMilesForBuyer = 0;
+                    
+                    // Start mileage calculation from the pickup location (not driver's previous position)
+                    // The $4 pickup fee covers the driver's travel to the pickup location
+                    
+                    // Add all route segments from pickup to buyer dropoff
+                    for (let i = pickupStepIndex; i < dropoffStepIndex; i++) {
+                        totalMilesForBuyer += routeData.route[i + 1].distance;
+                    }
+                    
+                    // Calculate fees for this buyer with overage structure
+                    let baseMileageFee = 0;
+                    let overageFee = 0;
+                    let totalDriverPay = 0;
+                    
+                    if (totalMilesForBuyer <= 15) {
+                        // All miles at base rate
+                        baseMileageFee = totalMilesForBuyer * 0.50;
+                        totalDriverPay = baseMileageFee;
+                    } else {
+                        // First 15 miles at base rate, remaining at overage rate
+                        baseMileageFee = 15 * 0.50; // $7.50 for first 15 miles
+                        const extraMiles = totalMilesForBuyer - 15;
+                        overageFee = extraMiles * 1.50; // $1.50 per mile after 15 miles
+                        totalDriverPay = baseMileageFee + overageFee;
+                    }
+                    
+                    // Platform takes 15% commission on all mileage charges
+                    const platformCommission = totalDriverPay * 0.15;
+                    const totalFee = totalDriverPay + platformCommission;
+                    
+                    buyerMileageFees.push({
+                        itemId: item.id,
+                        itemName: item.name,
+                        miles: Math.round(totalMilesForBuyer * 100) / 100,
+                        baseFee: baseMileageFee,
+                        overageFee: overageFee,
+                        totalDriverPay: totalDriverPay,
+                        platformCommission: platformCommission,
+                        totalFee: totalFee,
+                        sellerLocation: sellerLocation.name,
+                        buyerLocation: buyerLocation.name,
+                        isShopDeliveryDay: false
+                    });
+                });
+            }
+            
+            return buyerMileageFees;
+        }
+
+        // Calculate total mileage fee (sum of all individual buyer fees)
+        function calculateMileageFee() {
+            const individualFees = calculateIndividualMileageFees();
+            const totalFee = individualFees.reduce((sum, fee) => sum + fee.totalFee, 0);
+            
+            // Store individual fees for detailed display
+            cartData.individualMileageFees = individualFees;
+            cartData.deliveryDistance = individualFees.reduce((sum, fee) => sum + fee.miles, 0);
+            
+            return totalFee;
+        }
+
+        // Update delivery distance
+        function updateDeliveryDistance() {
+            const selectedDistance = parseFloat(document.getElementById('distanceSelector').value);
+            cartData.deliveryDistance = selectedDistance;
+            localStorage.setItem('marketplaceCart', JSON.stringify(cartData));
+            updateCosts();
+            
+            // Show notification about distance change
+            if (selectedDistance > 15) {
+                showNotification(`Distance updated to ${selectedDistance} miles - premium fees apply beyond 15 miles`, 'info');
+            } else {
+                showNotification(`Distance updated to ${selectedDistance} miles - standard pricing`, 'success');
+            }
+        }
+
+        // Update urgent delivery
+        function updateUrgentDelivery() {
+            cartData.urgentDelivery = document.getElementById('urgentDelivery').checked;
+            updateCosts();
+        }
+
+        // Update checkout button state
+        function updateCheckoutButton() {
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            const hasItems = cartData.items.length > 0;
+            const hasWindow = cartData.selectedWindow !== null;
+            const allAvailable = cartData.items.every(item => item.availabilityStatus !== 'unavailable');
+            
+            if (hasItems && hasWindow && allAvailable) {
+                checkoutBtn.disabled = false;
+                checkoutBtn.textContent = 'Proceed to Payment';
+            } else if (!hasItems) {
+                checkoutBtn.disabled = true;
+                checkoutBtn.textContent = 'Cart is Empty';
+            } else if (!hasWindow) {
+                checkoutBtn.disabled = true;
+                checkoutBtn.textContent = 'Select Delivery Window';
+            } else if (!allAvailable) {
+                checkoutBtn.disabled = true;
+                checkoutBtn.textContent = 'Some Items Unavailable';
+            }
+        }
+
+        // Update cart badge in community page
+        function updateCartBadge() {
+            const badge = parent.document.getElementById('cartBadge');
+            if (badge) {
+                badge.textContent = cartData.items.length;
+            }
+        }
+
+        // Proceed to checkout
+        function proceedToCheckout() {
+            if (cartData.items.length === 0) {
+                showNotification('Your cart is empty', 'error');
+                return;
+            }
+            
+            if (!cartData.selectedWindow) {
+                showNotification('Please select a delivery window', 'error');
+                return;
+            }
+            
+            // Check item availability
+            const unavailableItems = cartData.items.filter(item => item.availabilityStatus === 'unavailable');
+            if (unavailableItems.length > 0) {
+                showNotification('Some items in your cart are no longer available', 'error');
+                return;
+            }
+            
+            // Prepare checkout data
+            const subtotal = cartData.items.reduce((sum, item) => sum + item.price, 0);
+            const checkoutData = {
+                items: cartData.items,
+                deliveryWindow: cartData.selectedWindow,
+                urgentDelivery: cartData.urgentDelivery,
+                costs: {
+                    subtotal: subtotal,
+                    platformFee: calculatePlatformFee(subtotal),
+                    marketplaceProtectionFee: 0.50,
+                    deliveryFee: calculateDeliveryFee(),
+                    largeItemFee: calculateLargeItemFee(),
+                    mileageFee: calculateMileageFee(),
+                    urgentFee: cartData.urgentDelivery ? 10.00 : 0
+                }
+            };
+            
+            // Store checkout data and redirect to payment
+            localStorage.setItem('marketplaceCheckout', JSON.stringify(checkoutData));
+            window.location.href = '/checkout';
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 10px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                max-width: 300px;
+                backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            `;
+            
+            switch(type) {
+                case 'success':
+                    notification.style.background = 'rgba(34, 197, 94, 0.9)';
+                    break;
+                case 'error':
+                    notification.style.background = 'rgba(239, 68, 68, 0.9)';
+                    break;
+                case 'warning':
+                    notification.style.background = 'rgba(251, 191, 36, 0.9)';
+                    break;
+                default:
+                    notification.style.background = 'rgba(59, 130, 246, 0.9)';
+            }
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+
+        // Sample items for testing different route types
+        const sampleItems = {
+            standard: [
+                {
+                    id: 1,
+                    name: "Wireless Headphones",
+                    price: 89.99,
+                    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&h=200&fit=crop",
+                    seller: "Electronics Store",
+                    size: "medium",
+                    availabilityStatus: "available"
+                },
+                {
+                    id: 2,
+                    name: "Coffee Table",
+                    price: 150.00,
+                    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=200&fit=crop",
+                    seller: "Vintage Boutique",
+                    size: "large",
+                    availabilityStatus: "limited"
+                },
+                {
+                    id: 3,
+                    name: "Garden Tools Set",
+                    price: 45.50,
+                    image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300&h=200&fit=crop",
+                    seller: "Outdoor Gear Co",
+                    size: "medium",
+                    availabilityStatus: "available"
+                }
+            ],
+            shopDelivery: [
+                {
+                    id: 4,
+                    name: "Beach Towel Set",
+                    price: 25.99,
+                    image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=300&h=200&fit=crop",
+                    seller: "Beach Shop Pro",
+                    size: "small",
+                    availabilityStatus: "available"
+                },
+                {
+                    id: 5,
+                    name: "Sunscreen & Beach Gear",
+                    price: 35.00,
+                    image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=300&h=200&fit=crop",
+                    seller: "Beach Shop Pro",
+                    size: "medium",
+                    availabilityStatus: "available"
+                },
+                {
+                    id: 6,
+                    name: "Beach Umbrella",
+                    price: 55.00,
+                    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=300&h=200&fit=crop",
+                    seller: "Beach Shop Pro",
+                    size: "large",
+                    availabilityStatus: "available"
+                }
+            ]
+        };
+
+        // Load standard mixed route items
+        function loadStandardItems() {
+            cartData.items = [...sampleItems.standard];
+            localStorage.setItem('marketplaceCart', JSON.stringify(cartData));
+            displayCartItems();
+            updateCosts();
+            updateCartBadge();
+            showNotification('Loaded standard mixed route items - from different sellers', 'success');
+        }
+
+        // Load shop delivery day items
+        function loadShopDeliveryItems() {
+            cartData.items = [...sampleItems.shopDelivery];
+            localStorage.setItem('marketplaceCart', JSON.stringify(cartData));
+            displayCartItems();
+            updateCosts();
+            updateCartBadge();
+            showNotification('Loaded shop delivery day items - all from Beach Shop Pro', 'success');
+        }
+
+        // Clear cart
+        function clearCart() {
+            cartData.items = [];
+            cartData.selectedWindow = null;
+            cartData.urgentDelivery = false;
+            cartData.deliveryRoute = null;
+            cartData.individualMileageFees = [];
+            localStorage.setItem('marketplaceCart', JSON.stringify(cartData));
+            displayCartItems();
+            updateCosts();
+            updateCartBadge();
+            
+            // Reset delivery window selection
+            document.querySelectorAll('.window-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.getElementById('urgentDelivery').checked = false;
+            
+            showNotification('Cart cleared', 'info');
+        }
+
+        // Display estimated payouts function
+        function displayEstimatedPayouts() {
+            if (cartData.items.length === 0 || !cartData.deliveryRoute) return;
+
+            const subtotal = cartData.items.reduce((sum, item) => sum + item.price, 0);
+            const platformFee = calculatePlatformFee(subtotal);
+            const marketplaceProtectionFee = 0.50;
+            const mileageFee = calculateMileageFee();
+            const largeItemFee = calculateLargeItemFee();
+            
+            // Calculate driver payout
+            let driverPayout = 0;
+            let platformMileageCommission = 0;
+            
+            if (cartData.deliveryRoute.isShopDeliveryDay) {
+                // Shop delivery: $4 pickup + $2 per dropoff, no mileage
+                const pickupFee = 4.00;
+                const dropoffFees = cartData.items.length * 2.00;
+                driverPayout = pickupFee + dropoffFees + largeItemFee; // Large item fee goes to driver
+            } else {
+                // Standard route: $4 pickup + $2 dropoff + mileage
+                const route = cartData.deliveryRoute.route;
+                const pickups = route.filter(step => step.type === 'pickup').length;
+                const dropoffs = route.filter(step => step.type === 'dropoff').length;
+                
+                const pickupFees = pickups * 4.00;
+                const dropoffFees = dropoffs * 2.00;
+                
+                // Calculate driver's mileage earnings (85% of mileage charges)
+                const totalMileageCharges = mileageFee;
+                platformMileageCommission = totalMileageCharges * 0.15;
+                const driverMileagePayment = totalMileageCharges * 0.85;
+                
+                driverPayout = pickupFees + dropoffFees + driverMileagePayment + largeItemFee;
+            }
+            
+            // Calculate seller earnings (after 5% commission and protection fee)
+            const sellerEarnings = subtotal - platformFee - marketplaceProtectionFee;
+            
+            // Update payout displays
+            const existingPayoutDisplay = document.getElementById('estimatedPayouts');
+            if (existingPayoutDisplay) {
+                existingPayoutDisplay.remove();
+            }
+            
+            const payoutHTML = `
+                <div id="estimatedPayouts" style="margin-top: 15px; padding: 15px; background: rgba(0,255,255,0.1); border: 1px solid rgba(0,255,255,0.3); border-radius: 10px;">
+                    <div style="font-size: 14px; font-weight: bold; color: #00ffff; margin-bottom: 10px;">💰 Estimated Payouts</div>
+                    <div style="font-size: 12px; line-height: 1.4;">
+                        <div style="margin-bottom: 8px; padding: 8px; background: rgba(34,197,94,0.2); border-radius: 5px;">
+                            <div style="color: #22c55e; font-weight: bold;">🚗 Driver Estimated Payout: $${driverPayout.toFixed(2)}</div>
+                            <div style="font-size: 10px; color: rgba(255,255,255,0.8); margin-top: 2px;">
+                                Includes pickup/dropoff fees, 85% mileage earnings${largeItemFee > 0 ? ', large delivery bonus' : ''}, and 100% tips
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 8px; padding: 8px; background: rgba(59,130,246,0.2); border-radius: 5px;">
+                            <div style="color: #3b82f6; font-weight: bold;">🏪 Seller Earnings: $${sellerEarnings.toFixed(2)}</div>
+                            <div style="font-size: 10px; color: rgba(255,255,255,0.8); margin-top: 2px;">
+                                After 5% commission and $0.50 Marketplace Protection Fee™
+                            </div>
+                        </div>
+                        ${platformMileageCommission > 0 ? `
+                        <div style="margin-bottom: 8px; padding: 8px; background: rgba(139,92,246,0.2); border-radius: 5px;">
+                            <div style="color: #8b5cf6; font-weight: bold;">🏢 Platform Mileage Commission: $${platformMileageCommission.toFixed(2)}</div>
+                            <div style="font-size: 10px; color: rgba(255,255,255,0.8); margin-top: 2px;">
+                                15% commission on mileage charges only
+                            </div>
+                        </div>
+                        ` : ''}
+                        <div style="margin-top: 8px; padding: 6px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                            <div style="font-size: 10px; color: rgba(255,255,255,0.7); text-align: center;">
+                                💡 Max reimbursement: $100/item. Items above $100 not fully insured unless self pickup selected.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Insert after the cost breakdown
+            const costBreakdown = document.querySelector('.cost-breakdown');
+            costBreakdown.insertAdjacentHTML('afterend', payoutHTML);
+        }
+
+        // Show driver insurance demo modal
+        function showDriverInsuranceDemo() {
+            const modalHTML = `
+                <div id="driverInsuranceModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+                    <div style="background: linear-gradient(135deg, #0d0221 0%, #1a0845 50%); padding: 30px; border-radius: 15px; max-width: 600px; width: 90%; border: 2px solid rgba(0,255,255,0.3); box-shadow: 0 0 30px rgba(0,255,255,0.5);">
+                        <h3 style="color: #00ffff; margin-bottom: 20px; text-align: center;">🛡️ Driver Protection & Insurance System</h3>
+                        
+                        <div style="margin-bottom: 20px; padding: 15px; background: rgba(0,255,255,0.1); border-radius: 10px;">
+                            <h4 style="color: #22c55e; margin-bottom: 10px;">Driver Accountability Coverage: $4.00/month</h4>
+                            <ul style="color: rgba(255,255,255,0.9); line-height: 1.6;">
+                                <li>• Automatically deducted from first delivery route pay each month</li>
+                                <li>• Protects drivers against customer conflicts when items break</li>
+                                <li>• Ensures accountability and damage protection coverage</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px; padding: 15px; background: rgba(139,92,246,0.1); border-radius: 10px;">
+                            <h4 style="color: #8b5cf6; margin-bottom: 10px;">Photo Requirements</h4>
+                            <ul style="color: rgba(255,255,255,0.9); line-height: 1.6;">
+                                <li>• Before pickup: Photo of item condition</li>
+                                <li>• After delivery: Photo confirming safe delivery</li>
+                                <li>• Protects both drivers and customers</li>
+                                <li>• Creates accountability trail for all deliveries</li>
+                            </ul>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px; padding: 15px; background: rgba(34,197,94,0.1); border-radius: 10px;">
+                            <h4 style="color: #22c55e; margin-bottom: 10px;">Quarterly Bonus Program</h4>
+                            <ul style="color: rgba(255,255,255,0.9); line-height: 1.6;">
+                                <li>• Drivers with good ratings and reviews who avoid customer conflicts get quarterly bonus payouts</li>
+                                <li>• No damaged delivery items = eligible for bonus rewards</li>
+                                <li>• Bonuses paid from security fund pool to reward excellent performance</li>
+                                <li>• Encourages professional service and careful item handling</li>
+                            </ul>
+                        </div>
+                        
+                        <button onclick="closeModal('driverInsuranceModal')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #00ffff, #9d4edd); border: none; color: white; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                            Got It!
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        // Show fee breakdown demo modal
+        function showFeeBreakdownDemo() {
+            const subtotal = 47.97; // Example order total
+            const platformFee = subtotal * 0.05;
+            const protectionFee = 0.50;
+            const deliveryFee = 5.00;
+            const total = subtotal + platformFee + protectionFee + deliveryFee;
+            
+            const modalHTML = `
+                <div id="feeBreakdownModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+                    <div style="background: linear-gradient(135deg, #0d0221 0%, #1a0845 50%); padding: 30px; border-radius: 15px; max-width: 600px; width: 90%; border: 2px solid rgba(0,255,255,0.3); box-shadow: 0 0 30px rgba(0,255,255,0.5);">
+                        <h3 style="color: #00ffff; margin-bottom: 20px; text-align: center;">💰 Complete Fee Structure Breakdown</h3>
+                        
+                        <div style="margin-bottom: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Subtotal (Your purchases):</span>
+                                <span style="color: #00ffff;">$${subtotal.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Platform Fee (5%):</span>
+                                <span style="color: #ff6b35;">$${platformFee.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Marketplace Protection Fee™:</span>
+                                <span style="color: #22c55e;">$${protectionFee.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <span>Delivery Service:</span>
+                                <span style="color: #8b5cf6;">$${deliveryFee.toFixed(2)}</span>
+                            </div>
+                            <hr style="border: 1px solid rgba(255,255,255,0.2); margin: 10px 0;">
+                            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 18px;">
+                                <span>Total:</span>
+                                <span style="color: #00ffff;">$${total.toFixed(2)}</span>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px; padding: 15px; background: rgba(0,255,255,0.1); border-radius: 10px;">
+                            <h4 style="color: #00ffff; margin-bottom: 10px;">Where Your Money Goes:</h4>
+                            <ul style="color: rgba(255,255,255,0.9); line-height: 1.6; font-size: 14px;">
+                                <li>• Platform Fee: Supports app development and community features</li>
+                                <li>• Protection Fee: Insurance fund for damaged items (up to $100 coverage)</li>
+                                <li>• Delivery Service: Driver payment ($4 pickup + $2 dropoff + mileage + tips)</li>
+                                <li>• Driver Insurance: $4/month deducted from first route for liability coverage</li>
+                            </ul>
+                        </div>
+                        
+                        <button onclick="closeModal('feeBreakdownModal')" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #00ffff, #9d4edd); border: none; color: white; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                            Got It!
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        // Close modal function
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // Initialize cart when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCart();
+            
+            // Update urgent delivery checkbox
+            document.getElementById('urgentDelivery').addEventListener('change', function() {
+                cartData.urgentDelivery = this.checked;
+                updateCosts();
+            });
+        });
+    </script>
+</body>
+</html>

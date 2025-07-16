@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketPace Driver Dashboard - Live Demo</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a0b3d, #2d1b69);
+            color: white;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(147, 197, 253, 0.8);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px) rotate(0deg); 
+                opacity: 0.4; 
+            }
+            25% { 
+                transform: translateY(-30px) translateX(10px) rotate(90deg); 
+                opacity: 0.8; 
+            }
+            50% { 
+                transform: translateY(-15px) translateX(-10px) rotate(180deg); 
+                opacity: 1; 
+            }
+            75% { 
+                transform: translateY(-25px) translateX(5px) rotate(270deg); 
+                opacity: 0.6; 
+            }
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 20px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .demo-badge {
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .demo-section {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            color: #00ffff;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .map-container {
+            height: 500px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .route-info {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            height: 500px;
+            overflow-y: auto;
+        }
+
+        .route-step {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .route-step.active {
+            background: rgba(16, 185, 129, 0.3);
+            border-left-color: #00ffff;
+        }
+
+        .route-step.completed {
+            background: rgba(34, 197, 94, 0.2);
+            border-left-color: #22c55e;
+        }
+
+        .step-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .step-status {
+            background: #10b981;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .step-status.active {
+            background: #00ffff;
+            color: #000;
+        }
+
+        .step-status.completed {
+            background: #22c55e;
+        }
+
+        .communication-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .message-thread {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .message.driver {
+            background: rgba(16, 185, 129, 0.1);
+            margin-left: 20px;
+        }
+
+        .message.customer {
+            background: rgba(147, 197, 253, 0.1);
+            margin-right: 20px;
+        }
+
+        .photo-upload {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .photo-upload:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #00ffff;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #00ffff, #6b46c1);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+            margin: 5px;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .action-btn.danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .action-btn.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .earnings-tracker {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(0, 255, 255, 0.2));
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .earnings-amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+
+        .notification-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 20px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .gps-status {
+            background: rgba(16, 185, 129, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .gps-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .route-optimization {
+            background: rgba(138, 43, 226, 0.1);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .optimization-stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .camera-preview {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: inline-block;
+            margin: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .camera-preview:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .map-container, .route-info {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">MarketPace Driver Dashboard</div>
+            <div class="demo-badge">LIVE DEMO</div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <!-- Route Earnings Tracker -->
+        <div class="earnings-tracker">
+            <div class="earnings-amount">$47.50</div>
+            <div>Current Route Earnings</div>
+            <div style="font-size: 14px; opacity: 0.8; margin-top: 5px;">
+                4/6 deliveries completed • 2 pickups remaining
+            </div>
+        </div>
+
+        <!-- Main Demo Section -->
+        <div class="demo-section">
+            <h2 class="section-title">Live Route Tracking & Optimization</h2>
+            
+            <!-- GPS Status -->
+            <div class="gps-status">
+                <div class="gps-indicator"></div>
+                <span>GPS Active • Real-time tracking enabled</span>
+                <span style="margin-left: auto; color: #00ffff;">ETA: 12 minutes</span>
+            </div>
+
+            <!-- Route Optimization Stats -->
+            <div class="route-optimization">
+                <h4 style="color: #8a2be2; margin-bottom: 10px;">AI Route Optimization</h4>
+                <div class="optimization-stat">
+                    <span>Original Route:</span>
+                    <span>18.2 miles • 45 minutes</span>
+                </div>
+                <div class="optimization-stat">
+                    <span>Optimized Route:</span>
+                    <span style="color: #10b981;">15.8 miles • 38 minutes</span>
+                </div>
+                <div class="optimization-stat">
+                    <span>Savings:</span>
+                    <span style="color: #00ffff;">2.4 miles • 7 minutes</span>
+                </div>
+            </div>
+
+            <div class="demo-grid">
+                <!-- Interactive Map -->
+                <div class="map-container">
+                    <div id="driverMap" style="height: 100%; width: 100%;"></div>
+                </div>
+
+                <!-- Route Steps -->
+                <div class="route-info">
+                    <h4 style="color: #00ffff; margin-bottom: 15px;">Route Progress</h4>
+                    
+                    <div class="route-step completed">
+                        <div class="step-header">
+                            <strong>1. Pickup - Sarah's Electronics</strong>
+                            <span class="step-status completed">COMPLETED</span>
+                        </div>
+                        <div>123 Main St • Phone case • $25</div>
+                        <div style="font-size: 12px; opacity: 0.8;">Completed: 2:15 PM</div>
+                    </div>
+
+                    <div class="route-step completed">
+                        <div class="step-header">
+                            <strong>2. Delivery - John Smith</strong>
+                            <span class="step-status completed">DELIVERED</span>
+                        </div>
+                        <div>456 Oak Ave • Phone case • Tip: $3</div>
+                        <div style="font-size: 12px; opacity: 0.8;">Delivered: 2:28 PM</div>
+                    </div>
+
+                    <div class="route-step active">
+                        <div class="step-header">
+                            <strong>3. Pickup - Maria's Boutique</strong>
+                            <span class="step-status active">EN ROUTE</span>
+                        </div>
+                        <div>789 Pine St • Vintage jacket • $85</div>
+                        <div style="font-size: 12px; opacity: 0.8;">ETA: 12 minutes</div>
+                        <button class="action-btn" onclick="arriveAtPickup()">Arrive at Pickup</button>
+                    </div>
+
+                    <div class="route-step">
+                        <div class="step-header">
+                            <strong>4. Delivery - Lisa Chen</strong>
+                            <span class="step-status">PENDING</span>
+                        </div>
+                        <div>321 Elm St • Vintage jacket</div>
+                        <div style="font-size: 12px; opacity: 0.8;">After pickup completion</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Communication Panel -->
+        <div class="demo-section">
+            <h2 class="section-title">Driver-Customer Communication</h2>
+            
+            <div class="communication-panel">
+                <div class="message-thread">
+                    <h4 style="color: #00ffff; margin-bottom: 10px;">Maria's Boutique - Pickup</h4>
+                    
+                    <div class="message customer">
+                        <strong>Maria (Seller):</strong> Hi! The jacket is ready for pickup. I'll be here until 5 PM.
+                        <div style="font-size: 12px; opacity: 0.7;">2:10 PM</div>
+                    </div>
+                    
+                    <div class="message driver">
+                        <strong>Driver (You):</strong> Great! I'm about 12 minutes away. Will send a photo when I arrive.
+                        <div style="font-size: 12px; opacity: 0.7;">2:32 PM</div>
+                    </div>
+                    
+                    <div class="message customer">
+                        <strong>Lisa (Buyer):</strong> Can't wait to get my jacket! Will you be able to deliver around 3 PM?
+                        <div style="font-size: 12px; opacity: 0.7;">2:35 PM</div>
+                    </div>
+                    
+                    <div class="message driver">
+                        <strong>Driver (You):</strong> Yes! I'll send you a photo when I pick it up and an ETA for delivery.
+                        <div style="font-size: 12px; opacity: 0.7;">2:37 PM</div>
+                    </div>
+                </div>
+
+                <!-- Photo Upload Section -->
+                <div class="photo-upload" onclick="takePhoto()">
+                    <div style="margin-bottom: 10px;">📸 Take Pickup Photo</div>
+                    <div style="font-size: 14px; opacity: 0.7;">
+                        Send verification photo to buyer & seller
+                    </div>
+                </div>
+
+                <!-- Camera Preview -->
+                <div style="margin-top: 15px;">
+                    <div class="camera-preview" onclick="viewPhoto('pickup')"></div>
+                    <div class="camera-preview" onclick="viewPhoto('delivery')"></div>
+                    <div class="camera-preview" onclick="viewPhoto('condition')"></div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <button class="action-btn success" onclick="sendPickupNotification()">
+                        Send Pickup Notification
+                    </button>
+                    <button class="action-btn" onclick="sendCustomMessage()">
+                        Send Custom Message
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Driver Actions -->
+        <div class="demo-section">
+            <h2 class="section-title">Driver Actions & Features</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div style="background: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px;">
+                    <h4 style="color: #00ffff; margin-bottom: 15px;">Route Management</h4>
+                    <button class="action-btn" onclick="optimizeRoute()">Optimize Route</button>
+                    <button class="action-btn" onclick="skipLocation()">Skip Location</button>
+                    <button class="action-btn danger" onclick="reportIssue()">Report Issue</button>
+                </div>
+                
+                <div style="background: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px;">
+                    <h4 style="color: #00ffff; margin-bottom: 15px;">Communication</h4>
+                    <button class="action-btn" onclick="callCustomer()">Call Customer</button>
+                    <button class="action-btn" onclick="sendSMS()">Send SMS</button>
+                    <button class="action-btn" onclick="sendLocation()">Share Location</button>
+                </div>
+                
+                <div style="background: rgba(0, 0, 0, 0.6); padding: 20px; border-radius: 10px;">
+                    <h4 style="color: #00ffff; margin-bottom: 15px;">Documentation</h4>
+                    <button class="action-btn" onclick="takePhoto()">Take Photo</button>
+                    <button class="action-btn" onclick="recordNote()">Record Note</button>
+                    <button class="action-btn" onclick="verifyItem()">Verify Item</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Initialize particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Initialize map
+        let map, driverMarker, routePolyline;
+        
+        function initMap() {
+            map = L.map('driverMap').setView([30.2672, -87.5947], 13);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Sample route points
+            const routePoints = [
+                [30.2672, -87.5947], // Current location
+                [30.2745, -87.5891], // Maria's Boutique
+                [30.2698, -87.5823], // Lisa's delivery
+                [30.2756, -87.5978], // Next pickup
+                [30.2634, -87.5945], // Next delivery
+                [30.2689, -87.5934]  // Final delivery
+            ];
+
+            const locations = [
+                { name: "Current Location", type: "driver", pos: routePoints[0] },
+                { name: "Maria's Boutique (Pickup)", type: "pickup", pos: routePoints[1] },
+                { name: "Lisa Chen (Delivery)", type: "delivery", pos: routePoints[2] },
+                { name: "Tom's Tools (Pickup)", type: "pickup", pos: routePoints[3] },
+                { name: "Mike Rodriguez (Delivery)", type: "delivery", pos: routePoints[4] },
+                { name: "Sarah Williams (Delivery)", type: "delivery", pos: routePoints[5] }
+            ];
+
+            // Add markers
+            locations.forEach(location => {
+                let iconColor = location.type === 'driver' ? 'blue' : 
+                              location.type === 'pickup' ? 'green' : 'red';
+                
+                let marker = L.marker(location.pos).addTo(map);
+                marker.bindPopup(`<b>${location.name}</b><br>Type: ${location.type}`);
+                
+                if (location.type === 'driver') {
+                    driverMarker = marker;
+                }
+            });
+
+            // Add route polyline
+            routePolyline = L.polyline(routePoints, {
+                color: '#00ffff',
+                weight: 4,
+                opacity: 0.8,
+                dashArray: '10, 10'
+            }).addTo(map);
+
+            // Animate driver movement
+            animateDriver();
+        }
+
+        function animateDriver() {
+            const routePoints = [
+                [30.2672, -87.5947],
+                [30.2745, -87.5891],
+                [30.2698, -87.5823]
+            ];
+            
+            let currentIndex = 0;
+            const moveInterval = setInterval(() => {
+                if (currentIndex < routePoints.length - 1) {
+                    currentIndex++;
+                    driverMarker.setLatLng(routePoints[currentIndex]);
+                    map.setView(routePoints[currentIndex], 15);
+                } else {
+                    clearInterval(moveInterval);
+                }
+            }, 3000);
+        }
+
+        // Demo functions
+        function arriveAtPickup() {
+            showNotification("Arrived at Maria's Boutique", "You've arrived at the pickup location. Take a photo to verify the item.");
+            
+            // Update route step
+            document.querySelectorAll('.route-step')[2].classList.remove('active');
+            document.querySelectorAll('.route-step')[2].classList.add('completed');
+            document.querySelectorAll('.route-step')[2].querySelector('.step-status').textContent = 'ARRIVED';
+            document.querySelectorAll('.route-step')[2].querySelector('.step-status').className = 'step-status completed';
+        }
+
+        function takePhoto() {
+            showNotification("Photo Captured", "Item photo sent to buyer and seller automatically.");
+            
+            // Add photo to preview
+            const photoPreview = document.querySelector('.camera-preview');
+            photoPreview.style.background = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSJyZ2JhKDAsMjU1LDI1NSwwLjEpIi8+Cjx0ZXh0IHg9IjUwIiB5PSI1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzAwZmZmZiIgZm9udC1zaXplPSIzMCI+8J+TuDwvdGV4dD4KPC9zdmc+)';
+            photoPreview.style.backgroundSize = 'cover';
+        }
+
+        function sendPickupNotification() {
+            showNotification("Pickup Complete", "Automatic notifications sent to buyer and seller with item photo and delivery ETA.");
+            
+            // Add message to thread
+            const messageThread = document.querySelector('.message-thread');
+            const newMessage = document.createElement('div');
+            newMessage.className = 'message driver';
+            newMessage.innerHTML = `
+                <strong>Driver (You):</strong> ✅ Item picked up! Photo attached. ETA to delivery: 15 minutes.
+                <div style="font-size: 12px; opacity: 0.7;">${new Date().toLocaleTimeString()}</div>
+            `;
+            messageThread.appendChild(newMessage);
+        }
+
+        function optimizeRoute() {
+            showNotification("Route Optimized", "AI recalculated route - saved 2.4 miles and 7 minutes!");
+            
+            // Update route polyline with new optimized path
+            const optimizedPoints = [
+                [30.2672, -87.5947],
+                [30.2745, -87.5891],
+                [30.2756, -87.5978],
+                [30.2634, -87.5945],
+                [30.2698, -87.5823],
+                [30.2689, -87.5934]
+            ];
+            
+            routePolyline.setLatLngs(optimizedPoints);
+        }
+
+        function callCustomer() {
+            showNotification("Calling Customer", "Initiating call to Maria's Boutique...");
+        }
+
+        function sendSMS() {
+            showNotification("SMS Sent", "Text message sent: 'I'm 5 minutes away from pickup!'");
+        }
+
+        function sendLocation() {
+            showNotification("Location Shared", "Real-time location shared with customer.");
+        }
+
+        function recordNote() {
+            showNotification("Note Recorded", "Voice note: 'Item in excellent condition, wrapped securely'");
+        }
+
+        function verifyItem() {
+            showNotification("Item Verified", "Condition verified and documented with photos.");
+        }
+
+        function reportIssue() {
+            showNotification("Issue Reported", "Support team notified. Assistance on the way.");
+        }
+
+        function showNotification(title, message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification-popup';
+            notification.innerHTML = `
+                <div style="font-weight: bold; color: #00ffff; margin-bottom: 10px;">${title}</div>
+                <div style="font-size: 14px;">${message}</div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 4000);
+        }
+
+        function sendCustomMessage() {
+            const message = prompt("Enter your message:");
+            if (message) {
+                showNotification("Message Sent", `Custom message sent: "${message}"`);
+            }
+        }
+
+        function viewPhoto(type) {
+            showNotification("Photo Viewer", `Viewing ${type} verification photo`);
+        }
+
+        function skipLocation() {
+            showNotification("Location Skipped", "Location marked as inaccessible. Route updated.");
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            initMap();
+            
+            // Simulate real-time updates
+            setInterval(() => {
+                const earnings = document.querySelector('.earnings-amount');
+                const current = parseFloat(earnings.textContent.replace('$', ''));
+                // Simulate small earnings increases
+                if (Math.random() < 0.3) {
+                    earnings.textContent = `$${(current + (Math.random() * 5)).toFixed(2)}`;
+                }
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

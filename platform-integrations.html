@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Integrations - MarketPace Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-100px) rotate(180deg); opacity: 0.5; }
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 40px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b35, #ff9500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .integration-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .integration-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .integration-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .integration-icon {
+            font-size: 32px;
+            margin-right: 16px;
+            background: linear-gradient(45deg, #ff6b35, #ff9500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .integration-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ff6b35;
+        }
+
+        .integration-status {
+            margin-left: auto;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .status-working {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .status-coming-soon {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .status-pro {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .integration-description {
+            color: #e0e0e0;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .integration-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 16px;
+        }
+
+        .integration-features li {
+            padding: 4px 0;
+            color: #e0e0e0;
+            font-size: 13px;
+        }
+
+        .integration-features li:before {
+            content: "→";
+            color: #00ff88;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b35, #ff9500);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #6c757d, #495057);
+        }
+
+        .btn-pro {
+            background: linear-gradient(45deg, #ffc107, #ff9500);
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .restaurant-notice {
+            background: linear-gradient(45deg, #ff6b35, #ff9500);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .category-header {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 24px 0 16px 0;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .category-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ff6b35;
+            margin-bottom: 8px;
+        }
+
+        .category-description {
+            font-size: 14px;
+            color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles"></div>
+    
+    <button class="back-btn" onclick="window.history.back()">
+        ← Back
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <h1>🔗 Platform Integrations</h1>
+            <p>Connect your existing platforms to expand your reach</p>
+        </div>
+
+        <div class="restaurant-notice">
+            <strong>🍽️ Restaurant Owners:</strong><br>
+            Connect with delivery partners for full restaurant functionality.<br>
+            Uber Eats, DoorDash integration available below.
+            <br><br>
+            <strong>💡 Alternative Solution:</strong><br>
+            <button class="btn" onclick="window.location.href='/supabase-integration'" style="margin-top: 8px;">
+                Use Supabase as Integration Hub
+            </button>
+        </div>
+
+        <div class="category-header">
+            <div class="category-title">E-Commerce Platforms</div>
+            <div class="category-description">Connect your online stores and marketplaces</div>
+        </div>
+
+        <div class="integration-card">
+            <div class="integration-header">
+                <div class="integration-icon">🛒</div>
+                <div class="integration-title">Shopify Store</div>
+                <div class="integration-status status-working">Working</div>
+            </div>
+            <div class="integration-description">
+                Connect your Shopify store to sync products and enable local delivery through MarketPace.
+            </div>
+            <ul class="integration-features">
+                <li>Automatic product sync from Shopify catalog</li>
+                <li>Local delivery integration with MarketPace</li>
+                <li>Cross-platform inventory management</li>
+                <li>Custom shipping and processing fees</li>
+                <li>Product promotion system with Facebook sharing</li>
+            </ul>
+            <button class="btn" onclick="connectShopify()">Connect Shopify Store</button>
+        </div>
+
+        <div class="integration-card">
+            <div class="integration-header">
+                <div class="integration-icon">🛍️</div>
+                <div class="integration-title">Etsy Shop</div>
+                <div class="integration-status status-coming-soon">Coming Soon</div>
+            </div>
+            <div class="integration-description">
+                Connect your Etsy shop to cross-promote handmade items and crafts to local customers.
+            </div>
+            <ul class="integration-features">
+                <li>Automatic product sync from Etsy listings</li>
+                <li>Local promotion of handmade items</li>
+                <li>Cross-platform inventory management</li>
+                <li>Promote to customers who prefer local pickup</li>
+            </ul>
+            <button class="btn" onclick="connectEtsy()">Connect Etsy Shop</button>
+        </div>
+
+        <div class="integration-card">
+            <div class="integration-header">
+                <div class="integration-icon">📱</div>
+                <div class="integration-title">TikTok Shop</div>
+                <div class="integration-status status-coming-soon">Coming Soon</div>
+            </div>
+            <div class="integration-description">
+                Link your TikTok Shop to promote products to local TikTok followers in your area.
+            </div>
+            <ul class="integration-features">
+                <li>Connect existing verified TikTok Shop</li>
+                <li>Local audience targeting</li>
+                <li>Cross-platform order management</li>
+                <li>5% commission structure for local sales</li>
+            </ul>
+            <button class="btn" onclick="connectTikTokShop()">Connect TikTok Shop</button>
+        </div>
+
+        <div class="integration-card">
+            <div class="integration-header">
+                <div class="integration-icon">📘</div>
+                <div class="integration-title">Facebook Shop</div>
+                <div class="integration-status status-available">✅ Available</div>
+            </div>
+            <div class="integration-description">
+                Connect your Facebook Shop and automatically add "Deliver Now" buttons to all your products for local customers.
+            </div>
+            <ul class="integration-features">
+                <li>Facebook Product Catalog sync</li>
+                <li>Automatic MarketPace delivery integration</li>
+                <li>Real-time product synchronization</li>
+                <li>Local delivery radius management</li>
+            </ul>
+            <button class="btn" onclick="connectFacebookShop()">Connect Facebook Shop</button>
+        </div>
+
+        <div class="category-header">
+            <div class="category-title">Music & Entertainment</div>
+            <div class="category-description">Promote your creative work and events</div>
+        </div>
+
+        <div class="integration-card">
+            <div class="integration-header">
+                <div class="integration-icon">🎵</div>
+                <div class="integration-title">DistroKid</div>
+                <div class="integration-status status-pro">Pro Feature</div>
+            </div>
+            <div class="integration-description">
+                Automatically promote new music releases to local fans on release day.
+            </div>
+            <ul class="integration-features">
+                <li>Automatic release day promotion</li>
+                <li>Local fan notification system</li>
+                <li>Streaming platform integration</li>
+                <li>Calendar event creation for releases</li>
+            </ul>
+            <button class="btn btn-pro" onclick="window.location.href='/distrokid-integration'">Setup DistroKid</button>
+        </div>
+
+        <div class="integration-card">
+            <div class="integration-header">
+                <div class="integration-icon">🎸</div>
+                <div class="integration-title">Bandzoogle</div>
+                <div class="integration-status status-coming-soon">Coming Soon</div>
+            </div>
+            <div class="integration-description">
+                Connect your band website to promote shows and merchandise to local fans.
+            </div>
+            <ul class="integration-features">
+                <li>Event cross-promotion</li>
+                <li>Merchandise cross-selling</li>
+                <li>Fan engagement tools</li>
+                <li>Local venue networking</li>
+            </ul>
+            <button class="btn" onclick="window.location.href='/bandzoogle-integration'">Connect Bandzoogle</button>
+        </div>
+
+        <div class="category-header">
+            <div class="category-title">Event Management</div>
+            <div class="category-description">Manage and promote your events</div>
+        </div>
+
+        <div class="integration-card">
+            <div class="integration-header">
+                <div class="integration-icon">🎟️</div>
+                <div class="integration-title">Eventbrite</div>
+                <div class="integration-status status-coming-soon">Coming Soon</div>
+            </div>
+            <div class="integration-description">
+                Promote your Eventbrite events to local MarketPace community members.
+            </div>
+            <ul class="integration-features">
+                <li>Event sync and promotion</li>
+                <li>Local community notifications</li>
+                <li>Ticket sales integration</li>
+                <li>Event discovery for locals</li>
+            </ul>
+            <button class="btn" onclick="connectEventbrite()">Connect Eventbrite</button>
+        </div>
+
+        <div class="integration-card">
+            <div class="integration-header">
+                <div class="integration-icon">📅</div>
+                <div class="integration-title">Facebook Events</div>
+                <div class="integration-status status-coming-soon">Coming Soon</div>
+            </div>
+            <div class="integration-description">
+                Sync Facebook events to MarketPace community calendar with 30-mile radius filtering.
+            </div>
+            <ul class="integration-features">
+                <li>Real-time event synchronization</li>
+                <li>30-mile radius local filtering</li>
+                <li>RSVP integration</li>
+                <li>Community calendar display</li>
+            </ul>
+            <button class="btn" onclick="window.location.href='/facebook-events-integration-v2'">Setup Facebook Events</button>
+        </div>
+
+        <div class="category-header">
+            <div class="category-title">Food Service Platforms</div>
+            <div class="category-description">Restaurant promotion (delivery not available)</div>
+        </div>
+
+        <div class="integration-card">
+            <div class="integration-header">
+                <div class="integration-icon">🍔</div>
+                <div class="integration-title">Uber Eats</div>
+                <div class="integration-status status-coming-soon">Coming Soon</div>
+            </div>
+            <div class="integration-description">
+                Connect your existing Uber Eats restaurant for seamless order management and delivery through their licensed drivers.
+            </div>
+            <ul class="integration-features">
+                <li>Full restaurant menu integration</li>
+                <li>Order management through Uber Eats</li>
+                <li>Licensed delivery through Uber drivers</li>
+                <li>Local MarketPace promotion + delivery</li>
+            </ul>
+            <button class="btn" onclick="connectUberEats()">Connect Uber Eats</button>
+        </div>
+
+        <div class="integration-card">
+            <div class="integration-header">
+                <div class="integration-icon">🚗</div>
+                <div class="integration-title">DoorDash</div>
+                <div class="integration-status status-coming-soon">Coming Soon</div>
+            </div>
+            <div class="integration-description">
+                Connect your DoorDash restaurant account for complete delivery integration and order management.
+            </div>
+            <ul class="integration-features">
+                <li>DoorDash menu synchronization</li>
+                <li>Order routing through DoorDash</li>
+                <li>Licensed delivery through DoorDash drivers</li>
+                <li>MarketPace local promotion</li>
+            </ul>
+            <button class="btn" onclick="connectDoorDash()">Connect DoorDash</button>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particleContainer = document.querySelector('.floating-particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                particleContainer.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        async function connectShopify() {
+            const storeUrl = prompt('Enter your Shopify store URL:\n(e.g., https://your-store.myshopify.com)');
+            if (!storeUrl) return;
+            
+            const accessToken = prompt('Enter your Shopify Private App Access Token:\n\nTo create one:\n1. Go to your Shopify Admin\n2. Settings > Apps and sales channels\n3. Develop apps > Create app\n4. Configure > Admin API integration\n5. Generate access token');
+            if (!accessToken) return;
+            
+            try {
+                const response = await fetch('/api/integrations/shopify/connect', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ storeUrl, accessToken })
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`✅ Shopify store connected successfully!\n\nStore: ${result.store.name}\nDomain: ${result.store.domain}\nPlan: ${result.store.planName}\n\nYour products are now available for local delivery through MarketPace!`);
+                } else {
+                    alert(`❌ Connection failed: ${result.error}\n\nPlease check your store URL and access token.`);
+                }
+            } catch (error) {
+                alert('❌ Connection failed. Please check your internet connection.');
+            }
+        }
+
+        async function connectEtsy() {
+            const confirmed = confirm('Connect your Etsy shop to MarketPace?\n\nThis will allow you to promote your handmade items to local customers who prefer pickup or local delivery.');
+            if (confirmed) {
+                try {
+                    const response = await fetch('/api/integrations/etsy/connect', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const result = await response.json();
+                    alert(result.success ? '✅ Etsy shop connected successfully!' : '❌ Connection failed. Please try again.');
+                } catch (error) {
+                    alert('❌ Connection failed. Please check your internet connection.');
+                }
+            }
+        }
+
+        async function connectTikTokShop() {
+            const confirmed = confirm('Connect your TikTok Shop to MarketPace?\n\nNote: You must have an existing verified TikTok Shop to use this integration.');
+            if (confirmed) {
+                try {
+                    const response = await fetch('/api/integrations/tiktok/connect', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const result = await response.json();
+                    alert(result.success ? '✅ TikTok Shop connected successfully!' : '❌ Connection failed. Please ensure you have a verified TikTok Shop.');
+                } catch (error) {
+                    alert('❌ Connection failed. Please check your internet connection.');
+                }
+            }
+        }
+
+        async function connectFacebookShop() {
+            const confirmed = confirm('Connect your Facebook Shop to MarketPace?\n\nThis will add automatic "Deliver Now via MarketPace" buttons to your Facebook product listings.');
+            if (confirmed) {
+                try {
+                    const response = await fetch('/api/facebook-shop/auth');
+                    const result = await response.json();
+                    
+                    if (result.success && result.authUrl) {
+                        window.location.href = result.authUrl;
+                    } else {
+                        alert('❌ Connection failed. Please try again.');
+                    }
+                } catch (error) {
+                    alert('❌ Connection failed. Please check your internet connection.');
+                }
+            }
+        }
+
+        async function connectEventbrite() {
+            const confirmed = confirm('Connect your Eventbrite account to MarketPace?\n\nThis will promote your events to local community members within 30 miles.');
+            if (confirmed) {
+                try {
+                    const response = await fetch('/api/integrations/eventbrite/connect', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const result = await response.json();
+                    alert(result.success ? '✅ Eventbrite connected successfully!' : '❌ Connection failed. Please try again.');
+                } catch (error) {
+                    alert('❌ Connection failed. Please check your internet connection.');
+                }
+            }
+        }
+
+        async function connectUberEats() {
+            const restaurantInfo = prompt('Enter your Uber Eats restaurant ID or name:');
+            if (restaurantInfo) {
+                alert(`🍽️ Uber Eats Integration Setup\n\nRestaurant: ${restaurantInfo}\n\n✅ FULL DELIVERY INTEGRATION\n\nMarketPace will:\n• Promote your restaurant to local customers\n• Route orders through Uber Eats for delivery\n• Use Uber's licensed delivery drivers\n• Provide local community visibility\n\n📱 Customers order through MarketPace → Uber Eats handles delivery\n🚚 Professional licensed delivery service\n🎯 Increased local visibility and orders`);
+                
+                try {
+                    const response = await fetch('/api/integrations/uber-eats/connect', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ restaurantInfo: restaurantInfo })
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('✅ Uber Eats connected successfully! Your restaurant now has full delivery capabilities through MarketPace.');
+                    }
+                } catch (error) {
+                    console.error('Integration setup error:', error);
+                }
+            }
+        }
+
+        async function connectDoorDash() {
+            const restaurantInfo = prompt('Enter your DoorDash restaurant ID or name:');
+            if (restaurantInfo) {
+                alert(`🚗 DoorDash Integration Setup\n\nRestaurant: ${restaurantInfo}\n\n✅ FULL DELIVERY INTEGRATION\n\nMarketPace will:\n• Promote your restaurant locally\n• Route orders through DoorDash\n• Use DoorDash licensed drivers\n• Manage orders seamlessly\n\n📱 Local promotion + professional delivery\n🚚 Licensed DoorDash delivery network\n🎯 Expanded customer reach`);
+                
+                try {
+                    const response = await fetch('/api/integrations/doordash/connect', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ restaurantInfo: restaurantInfo })
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('✅ DoorDash connected successfully! Your restaurant now has full delivery integration.');
+                    }
+                } catch (error) {
+                    console.error('Integration setup error:', error);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

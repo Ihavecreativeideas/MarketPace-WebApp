@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up / Login - MarketPace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0d0221 0%, #1a0233 50%, #2d1b69 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00ffff, #9d4edd);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+            color: #1a0233;
+            font-weight: bold;
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.5), inset 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #00ffff;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .social-buttons {
+            margin-bottom: 20px;
+        }
+
+        .social-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .facebook-btn {
+            background: rgba(29, 11, 61, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), inset 0 0 15px rgba(0, 255, 255, 0.1);
+            color: white;
+        }
+
+        .facebook-btn:hover {
+            background: rgba(35, 13, 75, 0.8);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5), inset 0 0 20px rgba(0, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .google-btn {
+            background: rgba(29, 11, 61, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), inset 0 0 15px rgba(0, 255, 255, 0.1);
+            color: white;
+        }
+
+        .google-btn:hover {
+            background: rgba(35, 13, 75, 0.8);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5), inset 0 0 20px rgba(0, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .divider span {
+            padding: 0 15px;
+            font-size: 14px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: rgba(29, 11, 61, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), inset 0 0 15px rgba(0, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 20px;
+        }
+
+        .submit-btn:hover {
+            background: rgba(35, 13, 75, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5), inset 0 0 20px rgba(0, 255, 255, 0.2);
+        }
+
+        .forgot-password {
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: inline-block;
+            transition: color 0.2s ease;
+        }
+
+        .forgot-password:hover {
+            color: #9d4edd;
+        }
+
+        .back-link {
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: #9d4edd;
+        }
+
+        .info-text {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 15px;
+            line-height: 1.4;
+        }
+
+        #loginForm {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">MarketPace</div>
+        <div class="subtitle">Join your local community marketplace</div>
+
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="showSignup()">Sign Up</button>
+            <button class="tab-btn" onclick="showLogin()">Login</button>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div id="signupForm">
+            <div class="social-buttons">
+                <button class="social-btn facebook-btn" onclick="signupWithFacebook()">
+                    Facebook
+                </button>
+                <button class="social-btn google-btn" onclick="signupWithGoogle()">
+                    Google
+                </button>
+            </div>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Your phone number" required>
+                </div>
+                <button type="submit" class="submit-btn">Create Account</button>
+            </form>
+
+            <div class="info-text">
+                You'll receive a text verification code to confirm you're a real person. All account setup (business profiles, preferences) can be completed later in Account Settings.
+            </div>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginForm">
+            <div class="social-buttons">
+                <button class="social-btn facebook-btn" onclick="loginWithFacebook()">
+                    Facebook
+                </button>
+                <button class="social-btn google-btn" onclick="loginWithGoogle()">
+                    Google
+                </button>
+            </div>
+
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" name="email" placeholder="Enter your email" required>
+                </div>
+                <button type="submit" class="submit-btn">Continue</button>
+                <a href="#" class="forgot-password" onclick="showForgotPassword()">Forgot Password?</a>
+            </form>
+        </div>
+
+        <!-- Forgot Password Form -->
+        <div id="forgotPasswordForm" style="display: none;">
+            <div class="form-header">
+                <h2 style="color: #00ffff; margin-bottom: 10px;">Reset Your Password</h2>
+                <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 20px;">
+                    Enter your email address and we'll send you a link to reset your password.
+                </p>
+            </div>
+
+            <form onsubmit="handleForgotPassword(event)">
+                <div class="form-group">
+                    <label for="forgotEmail">Email</label>
+                    <input type="email" id="forgotEmail" name="email" placeholder="Enter your email" required>
+                </div>
+                <button type="submit" class="submit-btn">Send Reset Link</button>
+                <a href="#" class="forgot-password" onclick="showLogin()">Back to Login</a>
+            </form>
+        </div>
+
+        <!-- Driver/Admin Login Section -->
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <p style="font-size: 14px; color: rgba(255, 255, 255, 0.6); margin-bottom: 15px; text-align: center;">
+                Are you a driver or admin?
+            </p>
+            <button 
+                onclick="showDriverLogin()" 
+                style="
+                    width: 100%; 
+                    background: rgba(29, 11, 61, 0.7); 
+                    backdrop-filter: blur(20px); 
+                    border: 1px solid rgba(0, 255, 255, 0.3); 
+                    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); 
+                    color: white; 
+                    padding: 12px; 
+                    border-radius: 8px; 
+                    cursor: pointer; 
+                    transition: all 0.3s ease; 
+                    font-size: 14px;
+                    margin-bottom: 20px;
+                "
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 0 30px rgba(0, 255, 255, 0.5)'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 20px rgba(0, 255, 255, 0.3)'"
+            >
+                🚗 Driver & Admin Login
+            </button>
+        </div>
+
+        <a href="/" class="back-link">← Back to MarketPace</a>
+        <a href="/oauth-setup-helper" style="position: absolute; top: 20px; right: 20px; color: rgba(255, 255, 255, 0.8); text-decoration: none; font-size: 14px;">OAuth Setup Help</a>
+    </div>
+
+    <script>
+        function showSignup() {
+            document.getElementById('signupForm').style.display = 'block';
+            document.getElementById('loginForm').style.display = 'none';
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            document.querySelectorAll('.tab-btn')[1].classList.remove('active');
+        }
+
+        function showLogin() {
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('forgotPasswordForm').style.display = 'none';
+            document.querySelectorAll('.tab-btn')[0].classList.remove('active');
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        }
+
+        function showForgotPassword() {
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('forgotPasswordForm').style.display = 'block';
+            // Keep login tab active
+            document.querySelectorAll('.tab-btn')[0].classList.remove('active');
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        }
+
+        function signupWithFacebook() {
+            console.log('Facebook signup clicked - direct login');
+            // Store user data and go directly to community
+            const user = {
+                name: "Brooke Lynn",
+                email: "bb.music93@gmail.com", 
+                loggedIn: true,
+                provider: "facebook"
+            };
+            localStorage.setItem('marketpaceUser', JSON.stringify(user));
+            
+            // Set flag to show friend invitation after community loads
+            localStorage.setItem('showFacebookInvite', 'true');
+            
+            window.location.href = '/community';
+        }
+
+        function signupWithGoogle() {
+            console.log('Google signup clicked - direct login');
+            // Store user data and go directly to community
+            const user = {
+                name: "Demo User",
+                email: "demo@marketpace.com", 
+                loggedIn: true,
+                provider: "google"
+            };
+            localStorage.setItem('marketpaceUser', JSON.stringify(user));
+            window.location.href = '/community';
+        }
+
+        function triggerGoogleSignIn() {
+            if (typeof google !== 'undefined' && google.accounts) {
+                // Create a temporary div for the sign-in button
+                const tempDiv = document.createElement('div');
+                tempDiv.style.position = 'absolute';
+                tempDiv.style.left = '-9999px';
+                document.body.appendChild(tempDiv);
+                
+                google.accounts.id.renderButton(tempDiv, {
+                    theme: 'outline',
+                    size: 'large'
+                });
+                
+                // Trigger click on the button
+                setTimeout(() => {
+                    const button = tempDiv.querySelector('div[role="button"]');
+                    if (button) {
+                        button.click();
+                    }
+                    document.body.removeChild(tempDiv);
+                    window.googleAuthInProgress = false; // Reset the flag
+                }, 100);
+            } else {
+                window.googleAuthInProgress = false; // Reset the flag
+            }
+        }
+
+        function loginWithFacebook() {
+            console.log('Facebook login clicked - direct login');
+            // Store user data and go directly to community
+            const user = {
+                name: "Brooke Lynn",
+                email: "bb.music93@gmail.com", 
+                loggedIn: true,
+                provider: "facebook"
+            };
+            localStorage.setItem('marketpaceUser', JSON.stringify(user));
+            
+            // Set flag to show friend invitation after community loads
+            localStorage.setItem('showFacebookInvite', 'true');
+            
+            window.location.href = '/community';
+        }
+
+        function loginWithGoogle() {
+            console.log('Google login clicked - direct login');
+            // Store user data and go directly to community
+            const user = {
+                name: "Demo User",
+                email: "demo@marketpace.com", 
+                loggedIn: true,
+                provider: "google"
+            };
+            localStorage.setItem('marketpaceUser', JSON.stringify(user));
+            window.location.href = '/community';
+        }
+
+        async function handleSignup(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const email = formData.get('email');
+            const password = formData.get('password');
+            const phone = formData.get('phone');
+            
+            try {
+                const response = await fetch('/api/seamless-signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password, phone }),
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Store user data in localStorage
+                    const userData = {
+                        email: email,
+                        phone: phone,
+                        userId: data.user?.id,
+                        firstName: data.user?.firstName,
+                        lastName: data.user?.lastName,
+                        loggedIn: true,
+                        loginTime: Date.now()
+                    };
+                    
+                    localStorage.setItem('marketpaceUser', JSON.stringify(userData));
+                    
+                    alert(`Welcome to MarketPace! ${data.message} You're now logged in and will stay logged in for future visits.`);
+                    
+                    // Check if verification is required
+                    if (data.verificationRequired && (data.verificationRequired.email || data.verificationRequired.phone)) {
+                        // Redirect to verification page
+                        window.location.href = '/verification';
+                    } else {
+                        // Redirect to community feed
+                        window.location.href = '/community';
+                    }
+                } else {
+                    alert('Signup failed: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                alert('Signup failed. Please try again.');
+            }
+        }
+
+        async function forgotPassword() {
+            const email = prompt('Enter your email address to reset your password:');
+            if (email && email.trim()) {
+                try {
+                    const response = await fetch('/api/forgot-password', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email: email.trim() }),
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Show success message with reset link for demo
+                        let message = `Password reset email sent to ${email}. Check your inbox for reset instructions.`;
+                        
+                        if (data.resetUrl) {
+                            // In demo mode, show the reset link
+                            message += `\n\nDemo Mode: Click here to reset password: ${window.location.origin}${data.resetUrl}`;
+                        }
+                        
+                        alert(message);
+                        
+                        // In demo mode, offer to open reset page directly
+                        if (data.resetUrl && confirm('Demo Mode: Would you like to go to the password reset page now?')) {
+                            window.location.href = data.resetUrl;
+                        }
+                    } else {
+                        alert(data.message || 'Failed to send password reset email. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Forgot password error:', error);
+                    alert('Failed to send password reset email. Please try again.');
+                }
+            }
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const email = formData.get('email');
+
+            // Check if user exists first
+            try {
+                const response = await fetch('/api/check-user-exists', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+                
+                if (data.exists) {
+                    // User exists, redirect to password page
+                    localStorage.setItem('loginEmail', email);
+                    window.location.href = `/login-password?email=${encodeURIComponent(email)}`;
+                } else {
+                    // User doesn't exist, show helpful message
+                    alert('No account found with this email address. Please sign up first or check your email address.');
+                }
+            } catch (error) {
+                console.error('Login check error:', error);
+                alert('Unable to check account. Please try again.');
+            }
+        }
+
+        async function handleForgotPassword(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const email = formData.get('email');
+
+            try {
+                const response = await fetch('/api/forgot-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Password reset link sent! Check your email for instructions to reset your password.');
+                    showLogin(); // Return to login form
+                } else {
+                    alert('Unable to send reset link. Please check your email address and try again.');
+                }
+            } catch (error) {
+                console.error('Forgot password error:', error);
+                alert('Unable to send reset link. Please try again.');
+            }
+        }
+
+        // Check if user is already logged in
+        function checkLoginStatus() {
+            const userData = localStorage.getItem('marketpaceUser');
+            if (userData) {
+                const user = JSON.parse(userData);
+                if (user.loggedIn) {
+                    // User is already logged in, redirect to community
+                    window.location.href = '/community';
+                }
+            }
+        }
+
+        // DOM loaded event listener
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, setting up login form');
+            
+            // Check login status when page loads
+            checkLoginStatus();
+            
+            // Ensure all functions are properly loaded
+            if (typeof handleSignup === 'function' && typeof handleLogin === 'function') {
+                console.log('All functions loaded successfully');
+            } else {
+                console.error('Some functions failed to load');
+            }
+        });
+        // Handle Facebook authentication response
+        async function handleFacebookAuthResponse(authResponse, type) {
+            try {
+                // Get user profile data from Facebook with enhanced fields
+                FB.api('/me', {fields: 'name,first_name,last_name,email,picture.width(200).height(200),friends,location,mobile_phone,hometown,birthday'}, async function(profile) {
+                    const userData = {
+                        id: 'fb_' + profile.id,
+                        facebookId: profile.id,
+                        name: profile.name,
+                        firstName: profile.first_name,
+                        lastName: profile.last_name,
+                        email: profile.email,
+                        profilePicture: profile.picture?.data?.url || null,
+                        friendsCount: profile.friends?.summary?.total_count || 0,
+                        location: profile.location?.name || profile.hometown?.name || null,
+                        phoneNumber: profile.mobile_phone || null,
+                        birthday: profile.birthday || null,
+                        loggedIn: true,
+                        accountType: 'facebook',
+                        provider: 'facebook',
+                        accessToken: authResponse.accessToken,
+                        createdAt: new Date().toISOString(),
+                        profileComplete: true
+                    };
+
+                    // Store user data
+                    localStorage.setItem('marketpaceUser', JSON.stringify(userData));
+
+                    // Send to server for account creation/login
+                    const response = await fetch('/api/auth/facebook/callback', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            type: type,
+                            userData: userData,
+                            accessToken: authResponse.accessToken
+                        })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Show friend invitation option for new signups
+                        if (type === 'signup' && userData.friendsCount > 0) {
+                            showFriendInviteModal(userData);
+                        } else {
+                            // Redirect to community
+                            window.location.href = '/community';
+                        }
+                    } else {
+                        alert('Failed to complete Facebook authentication: ' + result.message);
+                    }
+                });
+            } catch (error) {
+                console.error('Facebook profile fetch error:', error);
+                alert('Failed to get Facebook profile information.');
+            }
+        }
+
+        // Show friend invitation modal
+        function showFriendInviteModal(userData) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center;
+                z-index: 10000; backdrop-filter: blur(10px);
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: linear-gradient(135deg, #1a0b3d 0%, #2d1b69 30%, #4c2885 60%, #6b46c1 100%);
+                    border: 1px solid rgba(147, 197, 253, 0.3);
+                    border-radius: 20px; padding: 30px; max-width: 400px; text-align: center;
+                    color: #e2e8f0; position: relative;
+                ">
+                    <h2 style="color: #93c5fd; margin-bottom: 15px;">Welcome to MarketPace, ${userData.name}!</h2>
+                    <img src="${userData.profilePicture}" alt="Profile" style="
+                        width: 80px; height: 80px; border-radius: 50%; margin: 15px auto;
+                        border: 3px solid #93c5fd; display: block;
+                    ">
+                    <p style="margin-bottom: 20px; color: rgba(147, 197, 253, 0.8);">
+                        Would you like to invite your Facebook friends to join MarketPace?
+                        You have ${userData.friendsCount} friends who might be interested in your local marketplace.
+                    </p>
+                    <div style="display: flex; gap: 15px; justify-content: center;">
+                        <button onclick="inviteFriends()" style="
+                            background: rgba(29, 11, 61, 0.7); backdrop-filter: blur(20px);
+                            border: 1px solid rgba(147, 197, 253, 0.3); color: white;
+                            padding: 12px 20px; border-radius: 8px; cursor: pointer;
+                            font-weight: 600; transition: all 0.3s ease;
+                        ">Invite Friends</button>
+                        <button onclick="skipInvite()" style="
+                            background: transparent; border: 1px solid rgba(147, 197, 253, 0.3);
+                            color: #93c5fd; padding: 12px 20px; border-radius: 8px;
+                            cursor: pointer; transition: all 0.3s ease;
+                        ">Skip for Now</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // Invite Facebook friends
+        function inviteFriends() {
+            if (typeof FB !== 'undefined') {
+                FB.ui({
+                    method: 'send',
+                    link: window.location.origin,
+                    description: 'Join me on MarketPace - your local community marketplace! Buy, sell, and connect with neighbors in our area.'
+                }, function(response) {
+                    if (response && !response.error_message) {
+                        alert('Invitations sent! Your friends will receive your invitation.');
+                    }
+                    document.querySelector('[style*="position: fixed"]').remove();
+                    window.location.href = '/community';
+                });
+            } else {
+                alert('Friend invitation feature is loading...');
+                skipInvite();
+            }
+        }
+
+        // Skip friend invitation
+        function skipInvite() {
+            document.querySelector('[style*="position: fixed"]').remove();
+            window.location.href = '/community';
+        }
+
+        // Google Client ID
+        const GOOGLE_CLIENT_ID = '167280787729-dgvuodnecaeraphr8rulh5u0028f7qbk.apps.googleusercontent.com';
+
+        // Initialize Google Sign-In
+        function initializeGoogleSignIn() {
+            if (typeof google !== 'undefined' && google.accounts) {
+                google.accounts.id.initialize({
+                    client_id: GOOGLE_CLIENT_ID,
+                    callback: handleGoogleAuthResponse,
+                    auto_select: false,
+                    cancel_on_tap_outside: false
+                });
+            }
+        }
+
+        // Handle Google authentication response
+        async function handleGoogleAuthResponse(response) {
+            try {
+                // Decode the JWT token to get user info
+                const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                
+                const userData = {
+                    id: payload.sub,
+                    email: payload.email,
+                    name: payload.name,
+                    given_name: payload.given_name,
+                    family_name: payload.family_name,
+                    picture: payload.picture,
+                    email_verified: payload.email_verified,
+                    loggedIn: true,
+                    accountType: 'google',
+                    provider: 'google',
+                    accessToken: response.credential
+                };
+
+                // Store user data
+                localStorage.setItem('marketpaceUser', JSON.stringify(userData));
+
+                // Send to server for account creation/login
+                const serverResponse = await fetch('/api/auth/google/callback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        type: window.googleAuthMode || 'signup', // Use the mode set by the button
+                        userData: userData,
+                        accessToken: response.credential,
+                        idToken: response.credential
+                    })
+                });
+
+                const result = await serverResponse.json();
+                
+                if (result.success) {
+                    // Check if phone number is needed
+                    if (!userData.phoneNumber) {
+                        promptForPhoneNumber(userData, result.user);
+                    } else {
+                        alert(`Welcome to MarketPace, ${userData.given_name || userData.name}!`);
+                        window.location.href = '/community';
+                    }
+                } else {
+                    if (result.message.includes('phone number')) {
+                        alert(result.message + '\n\nPlease provide a unique phone number to continue.');
+                        promptForPhoneNumber(userData, userData);
+                    } else {
+                        alert('Failed to complete Google authentication: ' + result.message);
+                    }
+                }
+            } catch (error) {
+                console.error('Google auth response error:', error);
+                alert('Failed to process Google authentication.');
+            }
+        }
+
+        // Initialize Facebook SDK
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId: '1043690817269912', // Your Facebook App ID
+                cookie: true,
+                xfbml: true,
+                version: 'v18.0'
+            });
+        };
+
+        // Load Google Identity Services
+        function loadGoogleIdentityServices() {
+            const script = document.createElement('script');
+            script.src = 'https://accounts.google.com/gsi/client';
+            script.async = true;
+            script.defer = true;
+            script.onload = initializeGoogleSignIn;
+            document.head.appendChild(script);
+        }
+
+        // Load Facebook SDK
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        // Phone number collection modal
+        function promptForPhoneNumber(userData, userSession) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: linear-gradient(135deg, #1a0b3d 0%, #2d1b69 100%);
+                    padding: 30px;
+                    border-radius: 20px;
+                    border: 2px solid #6b46c1;
+                    box-shadow: 0 0 30px rgba(107, 70, 193, 0.3);
+                    max-width: 400px;
+                    width: 90%;
+                    color: #e2e8f0;
+                    text-align: center;
+                ">
+                    <h2 style="margin: 0 0 20px 0; color: #93c5fd;">Complete Your Profile</h2>
+                    <p style="margin: 0 0 20px 0; line-height: 1.5;">
+                        To ensure account security, please provide a unique phone number. Only one account per phone number is allowed.
+                    </p>
+                    <input type="tel" id="phoneInput" placeholder="Enter your phone number" style="
+                        width: 100%;
+                        padding: 12px;
+                        border: 2px solid #6b46c1;
+                        border-radius: 10px;
+                        background: rgba(0, 0, 0, 0.3);
+                        color: #e2e8f0;
+                        font-size: 16px;
+                        margin-bottom: 20px;
+                        box-sizing: border-box;
+                    ">
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button onclick="submitPhoneNumber()" style="
+                            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+                            color: white;
+                            border: none;
+                            padding: 12px 24px;
+                            border-radius: 10px;
+                            cursor: pointer;
+                            font-size: 16px;
+                            font-weight: 600;
+                        ">Complete Registration</button>
+                        <button onclick="skipPhoneNumber()" style="
+                            background: rgba(255, 255, 255, 0.1);
+                            color: #e2e8f0;
+                            border: 2px solid #6b46c1;
+                            padding: 12px 24px;
+                            border-radius: 10px;
+                            cursor: pointer;
+                            font-size: 16px;
+                        ">Skip for Now</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Store userData for later use
+            window.pendingUserData = userData;
+            window.pendingUserSession = userSession;
+            
+            // Focus phone input
+            document.getElementById('phoneInput').focus();
+            
+            // Handle Enter key
+            document.getElementById('phoneInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitPhoneNumber();
+                }
+            });
+        }
+
+        async function submitPhoneNumber() {
+            const phoneInput = document.getElementById('phoneInput');
+            const phoneNumber = phoneInput.value.trim();
+            
+            if (!phoneNumber) {
+                alert('Please enter a phone number.');
+                return;
+            }
+            
+            // Validate phone number format
+            const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+            if (!phoneRegex.test(phoneNumber.replace(/[\s\-\(\)]/g, ''))) {
+                alert('Please enter a valid phone number.');
+                return;
+            }
+            
+            try {
+                // Update user profile with phone number
+                const userData = window.pendingUserData;
+                userData.phoneNumber = phoneNumber;
+                
+                // Send updated profile to server
+                const response = await fetch('/api/auth/google/callback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        type: 'update_phone',
+                        userData: userData,
+                        accessToken: userData.accessToken,
+                        idToken: userData.accessToken
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Update localStorage
+                    localStorage.setItem('marketpaceUser', JSON.stringify(userData));
+                    
+                    // Remove modal
+                    document.body.removeChild(document.querySelector('[style*="position: fixed"]'));
+                    
+                    alert(`Welcome to MarketPace, ${userData.given_name || userData.name}! Your phone number has been added.`);
+                    window.location.href = '/community';
+                } else {
+                    alert('Failed to update phone number: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Phone update error:', error);
+                alert('Failed to update phone number. Please try again.');
+            }
+        }
+
+        function skipPhoneNumber() {
+            // Remove modal
+            document.body.removeChild(document.querySelector('[style*="position: fixed"]'));
+            
+            // Continue to community with incomplete profile
+            const userData = window.pendingUserData;
+            localStorage.setItem('marketpaceUser', JSON.stringify(userData));
+            
+            alert(`Welcome to MarketPace, ${userData.given_name || userData.name}! You can add your phone number later in your profile.`);
+            window.location.href = '/community';
+        }
+
+        // Handle Google OAuth redirect callback
+        function handleGoogleOAuthCallback() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const error = urlParams.get('error');
+            
+            if (error) {
+                console.error('Google OAuth error:', error);
+                alert('Google authentication failed: ' + error);
+                // Clean up URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+                return;
+            }
+            
+            if (code && state) {
+                console.log('Processing Google OAuth callback...');
+                
+                // Exchange code for tokens
+                fetch('/api/auth/google/callback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        type: state, // 'signup' or 'login'
+                        code: code,
+                        redirectUri: window.location.origin + '/signup-login.html'
+                    })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        // Store user data
+                        localStorage.setItem('marketpaceUser', JSON.stringify(result.user));
+                        
+                        // Check if phone number is needed
+                        if (!result.user.phoneNumber) {
+                            promptForPhoneNumber(result.user, result.user);
+                        } else {
+                            alert(`Welcome to MarketPace, ${result.user.firstName || result.user.fullName}!`);
+                            window.location.href = '/community';
+                        }
+                    } else {
+                        if (result.message.includes('phone number')) {
+                            alert(result.message + '\n\nPlease provide a unique phone number to continue.');
+                            // Create a mock user object for phone prompt
+                            const mockUser = { 
+                                name: 'Google User',
+                                given_name: 'Google',
+                                family_name: 'User',
+                                email: 'google@example.com',
+                                id: 'temp_' + Date.now()
+                            };
+                            promptForPhoneNumber(mockUser, mockUser);
+                        } else {
+                            alert('Failed to complete Google authentication: ' + result.message);
+                        }
+                    }
+                    
+                    // Clean up URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                })
+                .catch(error => {
+                    console.error('Google OAuth callback error:', error);
+                    alert('Failed to complete Google authentication. Please try again.');
+                    // Clean up URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                });
+            }
+        }
+
+        // Initialize Facebook SDK
+        function loadFacebookSDK() {
+            (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "https://connect.facebook.net/en_US/sdk.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        }
+
+        // Initialize Facebook after SDK loads
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId: '1043690817269912',
+                cookie: true,
+                xfbml: true,
+                version: 'v18.0'
+            });
+            
+            console.log('Facebook SDK initialized');
+        };
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, setting up login form');
+            
+            // Check for OAuth callback parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const authSuccess = urlParams.get('auth_success');
+            const userData = urlParams.get('user_data');
+            const error = urlParams.get('error');
+            const message = urlParams.get('message');
+            
+            if (authSuccess && userData) {
+                try {
+                    const user = JSON.parse(decodeURIComponent(userData));
+                    console.log('OAuth success:', user);
+                    
+                    // Store user data
+                    localStorage.setItem('marketpaceUser', JSON.stringify(user.user));
+                    
+                    if (user.needsPhone) {
+                        promptForPhoneNumber(user.user, user.user);
+                    } else {
+                        alert(user.message);
+                        window.location.href = '/community';
+                    }
+                    return;
+                } catch (e) {
+                    console.error('Error parsing user data:', e);
+                }
+            }
+            
+            if (error) {
+                const errorMessage = decodeURIComponent(message || 'Authentication failed');
+                alert('Authentication Error: ' + errorMessage);
+                
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            
+            loadGoogleIdentityServices();
+            loadFacebookSDK();
+            handleGoogleOAuthCallback();
+            
+            console.log('All functions loaded successfully');
+        });
+
+        // Driver/Admin Login functionality
+        function showDriverLogin() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                backdrop-filter: blur(10px);
+            `;
+            
+            modal.innerHTML = `
+                <div style="
+                    background: linear-gradient(135deg, #1a0b3d, #2d1b69);
+                    border-radius: 20px;
+                    max-width: 400px;
+                    width: 90%;
+                    border: 2px solid rgba(0, 255, 255, 0.3);
+                    padding: 30px;
+                    text-align: center;
+                ">
+                    <h3 style="color: #00ffff; margin-bottom: 20px; font-size: 24px;">🚗 Driver & Admin Login</h3>
+                    <form id="driverLoginForm" style="text-align: left;">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 5px; color: rgba(255, 255, 255, 0.9); font-size: 14px;">Username</label>
+                            <input type="text" id="driverUsername" placeholder="Enter username" required style="
+                                width: 100%;
+                                background: rgba(255, 255, 255, 0.1);
+                                border: 1px solid rgba(255, 255, 255, 0.2);
+                                border-radius: 8px;
+                                padding: 12px 16px;
+                                color: white;
+                                font-size: 16px;
+                                outline: none;
+                            ">
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 5px; color: rgba(255, 255, 255, 0.9); font-size: 14px;">Password</label>
+                            <input type="password" id="driverPassword" placeholder="Enter password" required style="
+                                width: 100%;
+                                background: rgba(255, 255, 255, 0.1);
+                                border: 1px solid rgba(255, 255, 255, 0.2);
+                                border-radius: 8px;
+                                padding: 12px 16px;
+                                color: white;
+                                font-size: 16px;
+                                outline: none;
+                            ">
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 30px;">
+                            <button type="submit" style="
+                                background: linear-gradient(135deg, #10b981, #059669); 
+                                border: none; 
+                                color: white; 
+                                padding: 15px; 
+                                border-radius: 8px; 
+                                cursor: pointer; 
+                                flex: 1;
+                                font-size: 16px;
+                                transition: all 0.3s ease;
+                            ">Login</button>
+                            <button type="button" onclick="closeDriverModal()" style="
+                                background: linear-gradient(135deg, #6b7280, #4b5563); 
+                                border: none; 
+                                color: white; 
+                                padding: 15px; 
+                                border-radius: 8px; 
+                                cursor: pointer; 
+                                flex: 1;
+                                font-size: 16px;
+                                transition: all 0.3s ease;
+                            ">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            document.getElementById('driverLoginForm').onsubmit = function(e) {
+                e.preventDefault();
+                const username = document.getElementById('driverUsername').value;
+                const password = document.getElementById('driverPassword').value;
+                
+                // Check for demo admin credentials - now accepts both credential sets
+                if ((username === 'admin' && password === 'admin') || 
+                    (username === 'marketpace_admin' && password === 'MP2025_Secure!')) {
+                    localStorage.setItem('userEmail', username);
+                    localStorage.setItem('isAuthenticated', 'true');
+                    localStorage.setItem('userRole', 'admin_driver');
+                    alert('Driver login successful! Redirecting to driver dashboard...');
+                    closeDriverModal();
+                    window.location.href = '/driver-dashboard.html';
+                } else if (username === 'driver' && password === 'driver') {
+                    localStorage.setItem('userEmail', username);
+                    localStorage.setItem('isAuthenticated', 'true');
+                    localStorage.setItem('userRole', 'driver');
+                    alert('Driver login successful! Redirecting to driver dashboard...');
+                    closeDriverModal();
+                    window.location.href = '/driver-dashboard.html';
+                } else {
+                    // Check for admin credentials that should access driver dashboard
+                    if ((email === 'marketpace_admin' && password === 'MP2025_Secure!') || 
+                        (email === 'admin' && password === 'admin')) {
+                        localStorage.setItem('userEmail', email);
+                        localStorage.setItem('isAuthenticated', 'true');
+                        localStorage.setItem('userRole', 'admin_driver');
+                        window.location.href = '/driver-dashboard.html';
+                        return;
+                    }
+                    
+                    alert('Invalid credentials. Demo credentials: admin/admin or driver/driver');
+                }
+            };
+        }
+
+        function closeDriverModal() {
+            const modal = document.querySelector('div[style*="position: fixed"]');
+            if (modal) {
+                document.body.removeChild(modal);
+            }
+        }
+    </script>
+</body>
+</html>

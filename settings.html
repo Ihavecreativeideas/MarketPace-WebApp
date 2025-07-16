@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - MarketPace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a0b3d 0%, #2d1b69 30%, #4c2885 60%, #6b46c1 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(147, 197, 253, 0.8);
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px) rotate(0deg); 
+                opacity: 0.4; 
+            }
+            25% { 
+                transform: translateY(-30px) translateX(10px) rotate(90deg); 
+                opacity: 0.8; 
+            }
+            50% { 
+                transform: translateY(-15px) translateX(-10px) rotate(180deg); 
+                opacity: 1; 
+            }
+            75% { 
+                transform: translateY(-25px) translateX(5px) rotate(270deg); 
+                opacity: 0.6; 
+            }
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            color: #93c5fd;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(147, 197, 253, 0.3);
+        }
+
+        .back-btn:hover {
+            background: rgba(147, 197, 253, 0.1);
+            color: #ddd6fe;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .settings-section {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(20px);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #93c5fd;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            font-size: 16px;
+        }
+
+        .setting-description {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #93c5fd;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(22px);
+        }
+
+        .settings-button {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(147, 197, 253, 0.3);
+            color: #93c5fd;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .settings-button:hover {
+            background: rgba(147, 197, 253, 0.1);
+            color: #ddd6fe;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Particles -->
+    <div class="particles"></div>
+    
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.history.back()">← Back</button>
+            <h1>Settings</h1>
+        </div>
+
+        <div class="settings-section">
+            <div class="section-title">Account Settings</div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Profile Visibility</div>
+                    <div class="setting-description">Allow others to view your profile</div>
+                </div>
+                <div class="toggle-switch active" onclick="toggleSetting(this)">
+                    <div class="toggle-slider"></div>
+                </div>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Show Online Status</div>
+                    <div class="setting-description">Let others see when you're active</div>
+                </div>
+                <div class="toggle-switch" onclick="toggleSetting(this)">
+                    <div class="toggle-slider"></div>
+                </div>
+            </div>
+            <button class="settings-button" onclick="editProfile()">Edit Profile</button>
+        </div>
+
+        <div class="settings-section">
+            <div class="section-title">Privacy & Security</div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Two-Factor Authentication</div>
+                    <div class="setting-description">Add extra security to your account</div>
+                </div>
+                <div class="toggle-switch" onclick="toggleSetting(this)">
+                    <div class="toggle-slider"></div>
+                </div>
+            </div>
+            <button class="settings-button" onclick="window.location.href='/device-security'">Device Security</button>
+            <button class="settings-button" onclick="changePassword()">Change Password</button>
+        </div>
+
+        <div class="settings-section">
+            <div class="section-title">Notifications</div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Push Notifications</div>
+                    <div class="setting-description">Receive notifications about activity</div>
+                </div>
+                <div class="toggle-switch active" onclick="toggleSetting(this)">
+                    <div class="toggle-slider"></div>
+                </div>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Email Notifications</div>
+                    <div class="setting-description">Get updates via email</div>
+                </div>
+                <div class="toggle-switch active" onclick="toggleSetting(this)">
+                    <div class="toggle-slider"></div>
+                </div>
+            </div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Marketing Communications</div>
+                    <div class="setting-description">Receive promotional offers</div>
+                </div>
+                <div class="toggle-switch" onclick="toggleSetting(this)">
+                    <div class="toggle-slider"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="section-title">App Preferences</div>
+            <div class="setting-item">
+                <div>
+                    <div class="setting-label">Dark Mode</div>
+                    <div class="setting-description">Use dark theme (always on)</div>
+                </div>
+                <div class="toggle-switch active">
+                    <div class="toggle-slider"></div>
+                </div>
+            </div>
+            <button class="settings-button" onclick="clearCache()">Clear Cache</button>
+            <button class="settings-button" onclick="window.location.href='/platform-integrations'">Platform Integrations</button>
+        </div>
+
+        <div class="settings-section">
+            <div class="section-title">Support</div>
+            <button class="settings-button" onclick="contactSupport()">Contact Support</button>
+            <button class="settings-button" onclick="window.location.href='/privacy-policy'">Privacy Policy</button>
+            <button class="settings-button" onclick="window.location.href='/terms-of-service'">Terms of Service</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleSetting(element) {
+            element.classList.toggle('active');
+            // Save setting to localStorage
+            const label = element.parentElement.querySelector('.setting-label').textContent;
+            const isActive = element.classList.contains('active');
+            localStorage.setItem(`setting_${label.replace(/\s+/g, '_').toLowerCase()}`, isActive);
+        }
+
+        function editProfile() {
+            window.location.href = '/profile';
+        }
+
+        function changePassword() {
+            alert('Password change feature - redirecting to security settings...');
+            window.location.href = '/device-security';
+        }
+
+        function clearCache() {
+            if (confirm('Clear all cached data? This will log you out.')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                alert('Cache cleared successfully!');
+                window.location.href = '/';
+            }
+        }
+
+        function contactSupport() {
+            alert('Contact Support:\n\nEmail: support@marketpace.shop\nResponse time: 24-48 hours\n\nFor urgent issues, please include your user ID and describe the problem in detail.');
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles');
+            if (!particlesContainer) return;
+            
+            const particleCount = 40;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Load saved settings on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            document.querySelectorAll('.toggle-switch').forEach(toggle => {
+                const label = toggle.parentElement.querySelector('.setting-label')?.textContent;
+                if (label) {
+                    const savedSetting = localStorage.getItem(`setting_${label.replace(/\s+/g, '_').toLowerCase()}`);
+                    if (savedSetting === 'false') {
+                        toggle.classList.remove('active');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

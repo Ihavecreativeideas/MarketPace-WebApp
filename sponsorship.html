@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor MarketPace - Support Community Commerce</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://marketpace.shop/sponsorship.html">
+    <meta property="og:title" content="Partner With MarketPace - Build Stronger Communities">
+    <meta property="og:description" content="Join us in transforming local commerce! From $25 Community Supporter to $2,500 Legacy Founder - help create jobs, empower local businesses, and strengthen neighborhoods. Your support builds the future of community-first commerce.">
+    <meta property="og:image" content="https://marketpace.shop/facebook-sponsor-flyer.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="MarketPace Partnership Opportunities - Community Supporter $25, Local Partner $100, Community Champion $500, Brand Ambassador $1000, Legacy Founder $2500">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://marketpace.shop/sponsorship.html">
+    <meta property="twitter:title" content="Partner With MarketPace - Build Stronger Communities">
+    <meta property="twitter:description" content="Join us in transforming local commerce! From $25 Community Supporter to $2,500 Legacy Founder - help create jobs, empower local businesses, and strengthen neighborhoods.">
+    <meta property="twitter:image" content="https://marketpace.shop/facebook-sponsor-flyer.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0d0221 0%, #1a0b3d 50%, #2d1b69 100%);
+            color: white;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.8) 0%, rgba(0, 255, 255, 0.3) 70%, transparent 100%);
+            border-radius: 50%;
+            animation: float 12s infinite linear;
+        }
+
+        .particle:nth-child(odd) {
+            background: radial-gradient(circle, rgba(138, 43, 226, 0.8) 0%, rgba(138, 43, 226, 0.3) 70%, transparent 100%);
+            animation-duration: 15s;
+        }
+
+        @keyframes float {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) translateX(0) scale(0);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) translateX(10px) scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: translateY(50vh) translateX(-20px) scale(1.2);
+            }
+            90% {
+                opacity: 0.6;
+                transform: translateY(10vh) translateX(15px) scale(0.8);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10vh) translateX(0) scale(0);
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .back-btn {
+            background: transparent;
+            color: #87ceeb;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        .back-btn:hover {
+            color: #00ffff;
+            transform: translateX(-3px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.5);
+            filter: drop-shadow(0 0 25px rgba(138, 43, 226, 0.4));
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(45deg, #00FFFF, #8A2BE2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            margin-bottom: 20px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .sponsor-tiers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .tier-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tier-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00FFFF, #8A2BE2);
+        }
+
+        .tier-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.5);
+        }
+
+        .tier-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00FFFF;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .tier-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff6b35;
+            margin-bottom: 20px;
+        }
+
+        .tier-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .tier-features li {
+            padding: 8px 0;
+            opacity: 0.9;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tier-features li:before {
+            content: '✓';
+            color: #00FFFF;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .sponsor-btn {
+            width: 100%;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #1e40af, #3730a3);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(30, 64, 175, 0.3);
+            box-shadow: 0 4px 20px rgba(30, 64, 175, 0.2);
+        }
+
+        .sponsor-btn:hover {
+            background: linear-gradient(45deg, #2563eb, #4338ca);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .community-impact {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 60px 0;
+            border: 2px solid rgba(138, 43, 226, 0.3);
+            text-align: center;
+        }
+
+        .community-impact h2 {
+            font-size: 2.5rem;
+            color: #8A2BE2;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+        }
+
+        .impact-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00FFFF;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .sponsor-tiers { grid-template-columns: 1fr; }
+            .community-impact { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating particles -->
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <!-- Back Button -->
+        <button class="back-btn" onclick="window.history.back()">
+            <span style="font-size: 20px;">←</span> Back
+        </button>
+
+        <!-- Header -->
+        <div class="header">
+            <img src="/marketpace-logo-1.jpeg" alt="MarketPace Logo" class="logo">
+            <h1>Partner With MarketPace</h1>
+            <p>Join us in building stronger communities through local commerce. Your support helps create jobs, empower local businesses, and transform neighborhoods.</p>
+        </div>
+
+        <!-- Sponsorship Tiers -->
+        <div class="sponsor-tiers">
+            <div class="tier-card">
+                <div class="tier-name">Community Supporter</div>
+                <div class="tier-price">$25</div>
+                <div style="font-style: italic; opacity: 0.9; margin-bottom: 20px;">Show your support for community-first commerce</div>
+                <ul class="tier-features">
+                    <li>Personal thank-you letter from founder</li>
+                    <li>Public recognition on Community Feed & social media page</li>
+                    <li>MarketPace Backer badge</li>
+                </ul>
+                <button class="sponsor-btn" onclick="sponsorNow('supporter')">Support Now</button>
+            </div>
+
+            <div class="tier-card">
+                <div class="tier-name">Local Partner</div>
+                <div class="tier-price">$100</div>
+                <ul class="tier-features">
+                    <li>Everything in Supporter tier</li>
+                    <li>12 months zero delivery upcharge - you pay driver only</li>
+                </ul>
+                <button class="sponsor-btn" onclick="sponsorNow('partner')">Become a Partner</button>
+            </div>
+
+            <div class="tier-card">
+                <div class="tier-name">Community Champion</div>
+                <div class="tier-price">$500</div>
+                <div style="font-style: italic; opacity: 0.9; margin-bottom: 20px;">Shape your local economy and grow together with us</div>
+                <ul class="tier-features">
+                    <li>Everything in Local Partner</li>
+                    <li>Logo featured on website</li>
+                    <li>Social media shout-outs</li>
+                    <li>Lifetime Pro featured</li>
+                    <li>100 custom QR business cards</li>
+                    <li>MarketPace Partner window sticker</li>
+                    <li>MarketPace Partner delivery bags</li>
+                    <li>Homepage & sponsor page features</li>
+                    <li>Live event & platform mentions</li>
+                    <li>Monthly spotlight promotion</li>
+                </ul>
+                <button class="sponsor-btn" onclick="sponsorNow('champion')">Become a Champion</button>
+            </div>
+
+            <div class="tier-card">
+                <div class="tier-name">Brand Ambassador</div>
+                <div class="tier-price">$1,000</div>
+                <div style="font-size: 14px; opacity: 0.8; margin-bottom: 15px;">one-time</div>
+                <div style="font-style: italic; opacity: 0.9; margin-bottom: 20px;">Your voice matters - become a community champion</div>
+                <ul class="tier-features">
+                    <li>All Community Champion benefits plus:</li>
+                    <li>Personal video from founder</li>
+                    <li>Featured banner placement</li>
+                    <li>Exclusive Ambassador badge</li>
+                    <li>Custom social media campaigns</li>
+                    <li>Monthly route sponsorship</li>
+                    <li>Priority customer support</li>
+                </ul>
+                <button class="sponsor-btn" onclick="sponsorNow('ambassador')">Become an Ambassador</button>
+            </div>
+
+            <div class="tier-card">
+                <div class="tier-name">Legacy Founder</div>
+                <div class="tier-price">$2,500</div>
+                <div style="font-size: 14px; opacity: 0.8; margin-bottom: 15px;">one-time</div>
+                <div style="font-style: italic; opacity: 0.9; margin-bottom: 20px;">Cement your permanent impact on community commerce</div>
+                <ul class="tier-features">
+                    <li>All Ambassador benefits plus:</li>
+                    <li>Permanent Founding Partner status</li>
+                    <li>12 months of social promotions</li>
+                    <li>VIP founder updates & roadmap</li>
+                    <li>Press mentions & announcements</li>
+                    <li>Exclusive partner event invites</li>
+                    <li>Priority feature requests</li>
+                    <li>Bi-monthly route sponsorships</li>
+                </ul>
+                <button class="sponsor-btn" onclick="sponsorNow('legacy')" style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #000;">LEAVE YOUR LEGACY</button>
+            </div>
+        </div>
+
+        <!-- Community Impact -->
+        <div class="community-impact">
+            <h2>Our Community Impact</h2>
+            <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 30px;">
+                Together, we're building a platform that keeps money circulating locally, creates meaningful jobs, and strengthens community bonds.
+            </p>
+            
+            <div class="impact-stats">
+                <div class="stat-item">
+                    <span class="stat-number">1</span>
+                    <div class="stat-label">Cities Ready to Launch</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">0</span>
+                    <div class="stat-label">Community Members</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">0</span>
+                    <div class="stat-label">Driver Applications</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">0</span>
+                    <div class="stat-label">Local Businesses</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const randomX = Math.random() * 100;
+                const randomDelay = Math.random() * 15;
+                const randomDuration = 12 + Math.random() * 8;
+                
+                particle.style.left = randomX + '%';
+                particle.style.animationDelay = randomDelay + 's';
+                particle.style.animationDuration = randomDuration + 's';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Sponsor function with real Stripe integration
+        async function sponsorNow(tier) {
+            const tierDetails = {
+                supporter: { name: 'Community Supporter', amount: 25 },
+                partner: { name: 'Local Partner', amount: 100 },
+                champion: { name: 'Community Champion', amount: 500 },
+                ambassador: { name: 'Brand Ambassador', amount: 1000 },
+                legacy: { name: 'Legacy Founder', amount: 2500 }
+            };
+            
+            const selectedTier = tierDetails[tier];
+            if (!selectedTier) {
+                alert('Invalid sponsorship tier selected');
+                return;
+            }
+            
+            try {
+                // Show loading state
+                event.target.disabled = true;
+                event.target.textContent = 'Processing...';
+                
+                // Create Stripe checkout session
+                const response = await fetch('/api/create-sponsor-checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        tier: tier,
+                        tierName: selectedTier.name,
+                        amount: selectedTier.amount
+                    })
+                });
+                
+                const { sessionUrl } = await response.json();
+                
+                if (sessionUrl) {
+                    // Redirect to Stripe checkout
+                    window.location.href = sessionUrl;
+                } else {
+                    throw new Error('Failed to create checkout session');
+                }
+                
+            } catch (error) {
+                console.error('Error creating checkout session:', error);
+                alert('Payment system temporarily unavailable. Please try again later.');
+                
+                // Reset button state
+                event.target.disabled = false;
+                event.target.textContent = getOriginalButtonText(tier);
+            }
+        }
+        
+        function getOriginalButtonText(tier) {
+            const buttonTexts = {
+                supporter: 'Support Now',
+                partner: 'Become a Partner',
+                champion: 'Become a Champion',
+                ambassador: 'Become an Ambassador',
+                legacy: 'LEAVE YOUR LEGACY'
+            };
+            return buttonTexts[tier] || 'Sponsor Now';
+        }
+
+        // Initialize particles when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
+</body>
+</html>
