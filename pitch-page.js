@@ -4,7 +4,7 @@ const path = require('path');
 const app = express();
 
 app.use(express.json());
-app.use('/attached_assets', express.static(path.join(__dirname, 'attached_assets')));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(express.static(__dirname));
 
 function getSharedStyles() {
@@ -378,7 +378,7 @@ app.get('/', (req, res) => {
     <div style="background: rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 40px; margin: 40px 0; border: 2px solid rgba(0, 255, 255, 0.3); backdrop-filter: blur(10px); overflow: hidden;">
       <div style="display: flex; align-items: flex-start; gap: 30px; flex-wrap: wrap;">
         <div style="flex: 0 0 280px; text-align: center;">
-          <img src="/attached_assets/IMG_7976_1751900735722.jpeg" alt="Brooke Brown - Founder" style="width: 280px; height: 280px; border-radius: 20px; object-fit: cover; border: 4px solid rgba(0, 255, 255, 0.5); box-shadow: 0 0 40px rgba(0, 255, 255, 0.4); margin-bottom: 20px;">
+          <img src="/assets/founder-brooke-brown.jpg" alt="Brooke Brown - Founder" style="width: 280px; height: 280px; border-radius: 20px; object-fit: cover; border: 4px solid rgba(0, 255, 255, 0.5); box-shadow: 0 0 40px rgba(0, 255, 255, 0.4); margin-bottom: 20px;">
           <div style="font-size: 26px; font-weight: bold; color: #00FFFF; margin-bottom: 10px; text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);">Brooke Brown</div>
           <div style="font-size: 18px; color: #8A2BE2; opacity: 0.9; margin-bottom: 15px;">Founder & CEO, MarketPace</div>
           <div style="font-size: 14px; color: #FFD700; opacity: 0.8;">JMA Song of the Year Winner</div>
