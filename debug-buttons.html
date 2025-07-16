@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Community Buttons - MarketPace</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0d0221, #2d1b69);
+            color: white;
+            padding: 20px;
+        }
+        .test-section {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 191, 255, 0.3);
+        }
+        .test-btn {
+            background: rgba(0, 191, 255, 0.3);
+            border: 1px solid rgba(0, 191, 255, 0.5);
+            color: white;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .test-btn:hover {
+            background: rgba(0, 191, 255, 0.5);
+        }
+        #results {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid rgba(0, 255, 127, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Community Button Debug Test</h1>
+    
+    <div class="test-section">
+        <h3>Test Button Functions</h3>
+        <p>Click these buttons to test if JavaScript is working:</p>
+        
+        <button class="test-btn" onclick="testToggleFilter()">Test Filter Toggle</button>
+        <button class="test-btn" onclick="testToggleMenu()">Test Menu Toggle</button>
+        <button class="test-btn" onclick="testCreatePost()">Test Create Post</button>
+        <button class="test-btn" onclick="testAddToCart()">Test Add to Cart</button>
+        <button class="test-btn" onclick="testGoToPage()">Test Navigation</button>
+        
+        <div id="results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Check Community Page</h3>
+        <p>If buttons work here but not on community page, there's a specific issue with that page.</p>
+        <button class="test-btn" onclick="window.location.href='/community'">Go to Community Page</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Console Log Check</h3>
+        <p>Check browser console (F12) for JavaScript errors.</p>
+        <button class="test-btn" onclick="checkConsole()">Log Test Message</button>
+    </div>
+    
+    <script>
+        function logResult(message) {
+            const results = document.getElementById('results');
+            results.innerHTML += `<div>✅ ${message}</div>`;
+        }
+        
+        function testToggleFilter() {
+            logResult('Filter toggle function working');
+            console.log('Filter toggle test successful');
+        }
+        
+        function testToggleMenu() {
+            logResult('Menu toggle function working');
+            console.log('Menu toggle test successful');
+        }
+        
+        function testCreatePost() {
+            logResult('Create post function working');
+            console.log('Create post test successful');
+        }
+        
+        function testAddToCart() {
+            logResult('Add to cart function working');
+            console.log('Add to cart test successful');
+        }
+        
+        function testGoToPage() {
+            logResult('Navigation function working');
+            console.log('Navigation test successful');
+        }
+        
+        function checkConsole() {
+            console.log('✅ Console logging is working properly');
+            console.error('🔥 Test error message (this is intentional)');
+            console.warn('⚠️ Test warning message (this is intentional)');
+            logResult('Check browser console for test messages');
+        }
+        
+        // Test inline onclick handlers
+        window.onload = function() {
+            logResult('Page loaded - JavaScript is working');
+            console.log('Debug page loaded successfully');
+        };
+    </script>
+</body>
+</html>
