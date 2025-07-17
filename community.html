@@ -1,125 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MarketPace Community</title>
-  <link rel="stylesheet" href="/styles/community.css" /> <!-- Optional external stylesheet -->
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #1a0b3d;
-      color: white;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #9d4edd;
-      padding: 20px;
-      text-align: center;
-    }
-    .logo {
-      height: 50px;
-    }
-    .container {
-      padding: 20px;
-    }
-    .btn {
-      display: inline-block;
-      background: #00ffff;
-      color: #1a0b3d;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 25px;
-      margin: 5px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .btn-share {
-      background: #9d4edd;
-      color: white;
-    }
-    .btn-close {
-      background: rgba(255,255,255,0.2);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.3);
-      padding: 8px 20px;
-      border-radius: 15px;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <img src="/images/marketpace-logo-1.jpeg" alt="MarketPace Logo" class="logo" onerror="this.src='/images/logo-fallback.png'">
-    <h1>Welcome to the MarketPace Community</h1>
-  </header>
-
-  <div class="container">
-    <p>Invite your friends and community to join MarketPace below:</p>
     <div style="margin: 20px 0;">
-      <button onclick="copyInviteLink()" class="btn">Copy Link</button>
-      <button onclick="shareInvite()" class="btn btn-share">Share</button>
-    </div>
-    <button onclick="logout()" class="btn-close">Logout</button>
-  </div>
+                        <button onclick="copyInviteLink()" style="
+                            background: #00ffff; color: #1a0b3d; border: none; 
+                            padding: 12px 24px; border-radius: 25px; margin: 5px;
+                            cursor: pointer; font-weight: bold;
+                        "><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="display: inline-block; margin-right: 6px; vertical-align: middle;"><rect x="2" y="2" width="20" height="20" rx="3" stroke="currentColor" stroke-width="1.5" fill="rgba(59, 130, 246, 0.2)"/><rect x="8" y="2" width="8" height="4" rx="1" stroke="currentColor" stroke-width="1.5" fill="rgba(59, 130, 246, 0.1)"/><path d="M6 10h12M6 14h12M6 18h8" stroke="currentColor" stroke-width="1.5"/></svg> Copy Link</button>
+                        <button onclick="shareInvite()" style="
+                            background: #9d4edd; color: white; border: none; 
+                            padding: 12px 24px; border-radius: 25px; margin: 5px;
+                            cursor: pointer; font-weight: bold;
+                        "><svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="display: inline-block; margin-right: 6px; vertical-align: middle;"><rect x="2" y="2" width="20" height="20" rx="3" stroke="currentColor" stroke-width="1.5" fill="rgba(59, 130, 246, 0.2)"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13" stroke="currentColor" stroke-width="1.5"/></svg>Share</button>
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); 
+                        padding: 8px 20px; border-radius: 15px; cursor: pointer;
+                    ">Close</button>
+                </div>
+            `;
+            
+            document.body.appendChild(inviteModal);
+        }
+        
+        function copyInviteLink() {
+            const inviteText = window.location.origin;
+            navigator.clipboard.writeText(inviteText).then(() => {
+                alert('MarketPace link copied to clipboard!');
+            });
+        }
+        
+        function shareInvite() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Join MarketPace Community',
+                    text: 'Join me on MarketPace - the local community marketplace!',
+                    url: window.location.origin
+                });
+            } else {
+                copyInviteLink();
+            }
+        }
 
-  <script>
-    function copyInviteLink() {
-      const inviteText = window.location.origin;
-      navigator.clipboard.writeText(inviteText).then(() => {
-        alert('MarketPace link copied to clipboard!');
-      });
-    }
+        function goToCart() {
+            window.location.href = '/cart';
+            document.getElementById('menuDropdown').classList.remove('show');
+        }
 
-    function shareInvite() {
-      if (navigator.share) {
-        navigator.share({
-          title: 'Join MarketPace Community',
-          text: 'Join me on MarketPace - the local community marketplace!',
-          url: window.location.origin
-        });
-      } else {
-        copyInviteLink();
-      }
-    }
-
-    function goToCart() {
-      window.location.href = '/cart';
-      const dropdown = document.getElementById('menuDropdown');
-      if (dropdown) dropdown.classList.remove('show');
-    }
-
-    async function logout() {
-      try {
-        const response = await fetch('/api/logout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        const result = await response.json();
-
-        localStorage.removeItem('marketpaceUser');
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('userProfile');
-        localStorage.removeItem('sessionData');
-        localStorage.removeItem('marketplaceCart');
-        localStorage.removeItem('userFavorites');
-        sessionStorage.clear();
-
-        alert('Successfully logged out.');
-        window.location.href = '/signup-login';
-      } catch (error) {
-        console.error('Logout error:', error);
-
-        localStorage.clear();
-        sessionStorage.clear();
-        alert('You have been logged out (offline mode).');
-        window.location.href = '/signup-login';
-      }
-    }
-  </script>
-</body>
-</html>
+        async function logout() {
+            try {
+                // Call server logout endpoint
+                const response = await fetch('/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                // Clear all user data from localStorage regardless of server response
+                localStorage.removeItem('marketpaceUser');
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userProfile');
+                localStorage.removeItem('sessionData');
+                localStorage.removeItem('marketplaceCart');
+                localStorage.removeItem('userFavorites');
+                
+                // Clear any other stored user information
+                sessionStorage.clear();
+                
+                // Show logout confirmation
+                alert('Successfully logged out. You can now test Facebook and Google authentication.');
+                
+                // Redirect to signup/login page
+                window.location.href = '/signup-login';
+                
+            } catch (error) {
+                console.error('Logout error:', error);
+                
+                // Clear local data even if server call fails
