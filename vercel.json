@@ -1,40 +1,9 @@
 {
-  "version": 2,
-  "public": true,
-  "builds": [
-    {
-      "src": "**/*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "**/*.js",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "**/*.css",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "**/*.jpg",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "**/*.png",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "**/*.svg",
-      "use": "@vercel/static"
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "functions": {
+    "*.html": {
+      "maxDuration": 10
     }
-  ],
-  "routes": [
-    {
-      "src": "/",
-      "dest": "/pitch-page.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ]
+  }
 }
