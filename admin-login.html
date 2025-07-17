@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MarketPace Admin Dashboard</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>MarketPace Admin Login</title>
     <style>
         * {
             margin: 0;
@@ -13,521 +12,228 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        .admin-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .admin-header h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
-        }
-
-        .admin-header .user-info {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1a0b3d 0%, #6b46c1 100%);
+            min-height: 100vh;
             display: flex;
             align-items: center;
-            gap: 1rem;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        .community-btn {
-            background: rgba(0, 255, 255, 0.2);
-            border: 1px solid rgba(0, 255, 255, 0.4);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .floating-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
 
-        .community-btn:hover {
-            background: rgba(0, 255, 255, 0.3);
-            transform: translateY(-1px);
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
         }
 
-        .logout-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
         }
 
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
+        .login-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            position: relative;
         }
 
-        .admin-container {
-            display: flex;
-            min-height: calc(100vh - 70px);
-        }
-
-        .sidebar {
-            width: 250px;
-            background: white;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            padding: 2rem 0;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 1rem 2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: #666;
-            text-decoration: none;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-item:hover {
-            background: #f8f9fa;
-            color: #667eea;
-        }
-
-        .nav-item.active {
-            background: #f8f9fa;
-            color: #667eea;
-            border-left-color: #667eea;
-        }
-
-        .nav-item i {
-            margin-right: 1rem;
-            width: 20px;
+        .logo {
             text-align: center;
+            margin-bottom: 30px;
         }
 
-        .main-content {
-            flex: 1;
-            padding: 2rem;
-            background: #f5f7fa;
+        .logo h1 {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
-        .content-section {
-            display: none;
-            animation: fadeIn 0.3s ease;
+        .logo p {
+            color: #93c5fd;
+            font-size: 14px;
         }
 
-        .content-section.active {
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
             display: block;
+            color: #e2e8f0;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 2rem;
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: transform 0.3s ease;
+            color: #ffffff;
+            font-size: 16px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
+        .form-group input:focus {
+            outline: none;
+            border-color: #93c5fd;
+            box-shadow: 0 0 0 2px rgba(147, 197, 253, 0.2);
         }
 
-        .stat-card i {
-            font-size: 3rem;
-            color: #667eea;
-            margin-bottom: 1rem;
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
         }
 
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: #666;
-            font-size: 1.1rem;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .action-btn {
-            background: #667eea;
-            color: white;
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 5px;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 1rem;
+            margin-bottom: 20px;
         }
 
-        .action-btn:hover {
-            background: #5a67d8;
+        .login-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
         }
 
-        .section-title {
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            color: #333;
+        .back-link {
+            text-align: center;
         }
 
-        @media (max-width: 768px) {
-            .admin-container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                box-shadow: none;
-                border-bottom: 1px solid #eee;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
+        .back-link a {
+            color: #93c5fd;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: #ffffff;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="admin-header">
-        <h1><i class="fas fa-chart-line"></i> MarketPace Admin Dashboard</h1>
-        <div class="user-info">
-            <a href="community.html" class="community-btn">
-                <i class="fas fa-home"></i>
-                <span>Community</span>
-            </a>
-            <a href="driver-dashboard.html" class="community-btn" style="margin-left: 0.5rem;">
-                <i class="fas fa-truck"></i>
-                <span>Driver Dashboard</span>
-            </a>
-            <span>Welcome, Admin</span>
-            <button class="logout-btn" onclick="logout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-        </div>
-    </div>
-
-    <div class="admin-container">
-        <div class="sidebar">
-            <div class="nav-item active" onclick="showSection('overview')">
-                <i class="fas fa-tachometer-alt"></i>
-                <span>Platform Overview</span>
-            </div>
-            <div class="nav-item" onclick="showSection('analytics')">
-                <i class="fas fa-chart-bar"></i>
-                <span>Analytics</span>
-            </div>
-            <div class="nav-item" onclick="showSection('drivers')">
-                <i class="fas fa-car"></i>
-                <span>Driver Management</span>
-            </div>
-            <div class="nav-item" onclick="showSection('protection')">
-                <i class="fas fa-shield-alt"></i>
-                <span>Protection & Funds</span>
-            </div>
-            <div class="nav-item" onclick="showSection('campaigns')">
-                <i class="fas fa-bullhorn"></i>
-                <span>Campaign Tracker</span>
-            </div>
+    <div class="floating-particles"></div>
+    
+    <div class="login-container">
+        <div class="logo">
+            <h1>MarketPace</h1>
+            <p>Admin Dashboard Access</p>
         </div>
 
-        <div class="main-content">
-            <!-- Platform Overview Section -->
-            <div id="overview" class="content-section active">
-                <h2 class="section-title">Platform Overview</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <i class="fas fa-users"></i>
-                        <div class="stat-number">1,247</div>
-                        <div class="stat-label">Total Members</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-truck"></i>
-                        <div class="stat-number">89</div>
-                        <div class="stat-label">Active Drivers</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-shopping-cart"></i>
-                        <div class="stat-number">456</div>
-                        <div class="stat-label">Orders This Month</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-dollar-sign"></i>
-                        <div class="stat-number">$12,847</div>
-                        <div class="stat-label">Revenue</div>
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <button class="action-btn" onclick="exportData()">Export Data</button>
-                    <button class="action-btn" onclick="sendNotification()">Send Notification</button>
-                    <button class="action-btn" onclick="generateReport()">Generate Report</button>
-                </div>
+        <div id="errorMessage" class="error-message"></div>
+
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter admin username" required>
             </div>
 
-            <!-- Analytics Section -->
-            <div id="analytics" class="content-section">
-                <h2 class="section-title">Analytics Dashboard</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <i class="fas fa-eye"></i>
-                        <div class="stat-number">24,567</div>
-                        <div class="stat-label">Page Views</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-user-plus"></i>
-                        <div class="stat-number">127</div>
-                        <div class="stat-label">New Signups</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-percentage"></i>
-                        <div class="stat-number">73%</div>
-                        <div class="stat-label">Conversion Rate</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-clock"></i>
-                        <div class="stat-number">4.2m</div>
-                        <div class="stat-label">Avg Session</div>
-                    </div>
-                </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter admin password" required>
             </div>
 
-            <!-- Driver Management Section -->
-            <div id="drivers" class="content-section">
-                <h2 class="section-title">Driver Management</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <i class="fas fa-user-check"></i>
-                        <div class="stat-number">89</div>
-                        <div class="stat-label">Active Drivers</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-user-clock"></i>
-                        <div class="stat-number">12</div>
-                        <div class="stat-label">Pending Applications</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-star"></i>
-                        <div class="stat-number">4.8</div>
-                        <div class="stat-label">Average Rating</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-route"></i>
-                        <div class="stat-number">234</div>
-                        <div class="stat-label">Routes Completed</div>
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <button class="action-btn" onclick="approveDrivers()">Approve All</button>
-                    <button class="action-btn" onclick="reviewApplications()">Review Applications</button>
-                    <button class="action-btn" onclick="sendDriverAlert()">Send Alert</button>
-                </div>
-            </div>
+            <button type="submit" class="login-btn">Login to Admin Dashboard</button>
+        </form>
 
-            <!-- Protection & Funds Section -->
-            <div id="protection" class="content-section">
-                <h2 class="section-title">Protection & Funds</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <i class="fas fa-shield-alt"></i>
-                        <div class="stat-number">$45,720</div>
-                        <div class="stat-label">Protection Fund</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <div class="stat-number">3</div>
-                        <div class="stat-label">Active Claims</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-check-circle"></i>
-                        <div class="stat-number">156</div>
-                        <div class="stat-label">Resolved Claims</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-percentage"></i>
-                        <div class="stat-number">98.2%</div>
-                        <div class="stat-label">Success Rate</div>
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <button class="action-btn" onclick="processClaims()">Process Claims</button>
-                    <button class="action-btn" onclick="adjustFunds()">Adjust Fund</button>
-                    <button class="action-btn" onclick="generateClaimsReport()">Claims Report</button>
-                </div>
-            </div>
-
-            <!-- Campaign Tracker Section -->
-            <div id="campaigns" class="content-section">
-                <h2 class="section-title">Campaign Tracker</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <i class="fas fa-city"></i>
-                        <div class="stat-number">12</div>
-                        <div class="stat-label">Towns Launched</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-store"></i>
-                        <div class="stat-number">156</div>
-                        <div class="stat-label">Business Partners</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-handshake"></i>
-                        <div class="stat-number">287</div>
-                        <div class="stat-label">Service Providers</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-users"></i>
-                        <div class="stat-number">1,247</div>
-                        <div class="stat-label">Community Members</div>
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <button class="action-btn" onclick="launchNewTown()">Launch New Town</button>
-                    <button class="action-btn" onclick="trackProgress()">Track Progress</button>
-                    <button class="action-btn" onclick="exportCampaignData()">Export Data</button>
-                </div>
-            </div>
+        <div class="back-link">
+            <a href="/">← Back to MarketPace</a>
         </div>
     </div>
 
     <script>
-        function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Remove active class from all nav items
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Show selected section
-            document.getElementById(sectionId).classList.add('active');
-            
-            // Add active class to clicked nav item
-            event.target.closest('.nav-item').classList.add('active');
-        }
-
-        // Action button functions
-        function exportData() {
-            alert('Exporting platform data...');
-        }
-
-        function sendNotification() {
-            alert('Sending notification to all users...');
-        }
-
-        function generateReport() {
-            alert('Generating comprehensive report...');
-        }
-
-        function approveDrivers() {
-            alert('Approving all pending driver applications...');
-        }
-
-        function reviewApplications() {
-            alert('Opening driver applications for review...');
-        }
-
-        function sendDriverAlert() {
-            alert('Sending alert to all drivers...');
-        }
-
-        function processClaims() {
-            alert('Processing protection claims...');
-        }
-
-        function adjustFunds() {
-            alert('Adjusting protection fund levels...');
-        }
-
-        function generateClaimsReport() {
-            alert('Generating claims report...');
-        }
-
-        function launchNewTown() {
-            alert('Launching MarketPace in new town...');
-        }
-
-        function trackProgress() {
-            alert('Tracking campaign progress...');
-        }
-
-        function exportCampaignData() {
-            alert('Exporting campaign data...');
-        }
-
-        async function logout() {
-            try {
-                // Call server logout endpoint
-                const response = await fetch('/api/logout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                const result = await response.json();
-                
-                // Clear all user data from localStorage regardless of server response
-                localStorage.removeItem('marketpaceUser');
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('userProfile');
-                localStorage.removeItem('sessionData');
-                localStorage.removeItem('marketplaceCart');
-                localStorage.removeItem('userFavorites');
-                
-                // Clear any other stored user information
-                sessionStorage.clear();
-                
-                // Show logout confirmation
-                alert('Successfully logged out.');
-                
-                // Redirect to signup/login page
-                window.location.href = '/signup-login';
-                
-            } catch (error) {
-                console.error('Logout error:', error);
-                
-                // Still clear local/session data just in case
-                localStorage.clear();
-                sessionStorage.clear();
-                alert('You have been logged out (offline).');
-                window.location.href = '/signup-login';
+        // Create floating particles
+        function createParticles() {
+            const container = document.querySelector('.floating-particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 4 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                container.appendChild(particle);
             }
         }
+
+        // Admin login credentials
+        const adminCredentials = {
+            'admin': 'admin',
+            'marketpace_admin': 'MP2025_Secure!'
+        };
+
+        // Handle login form submission
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+
+            // Check credentials
+            if (adminCredentials[username] && adminCredentials[username] === password) {
+                // Store admin session
+                localStorage.setItem('marketpace_admin', 'true');
+                localStorage.setItem('admin_username', username);
+                
+                // Redirect to admin dashboard
+                window.location.href = '/admin-dashboard';
+            } else {
+                // Show error message
+                errorDiv.textContent = 'Invalid username or password. Try admin/admin or marketpace_admin/MP2025_Secure!';
+                errorDiv.style.display = 'block';
+                
+                // Clear form
+                document.getElementById('password').value = '';
+            }
+        });
+
+        // Initialize particles
+        createParticles();
     </script>
 </body>
 </html>
