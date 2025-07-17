@@ -3,306 +3,660 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopify Integration Status - MarketPace Pro</title>
+    <title>Checkout - MarketPace</title>
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a0b3d, #6b46c1);
-            color: #e2e8f0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0d0221 0%, #1a0845 50%, #2d1b69 100%);
+            color: white;
             min-height: 100vh;
-            padding: 20px;
         }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
+
+        /* Floating Particles */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            z-index: 1;
         }
-        
+
+        .particle:nth-child(odd) {
+            background: rgba(0, 255, 255, 0.3);
+            animation: float 6s infinite linear;
+        }
+
+        .particle:nth-child(even) {
+            background: rgba(157, 78, 221, 0.3);
+            animation: float 8s infinite reverse;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+        }
+
+        /* Header */
         .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 30px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(45deg, #60a5fa, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-        
-        .status-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        
-        .status-card {
             background: rgba(0, 0, 0, 0.4);
-            border-radius: 15px;
-            padding: 25px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(99, 102, 241, 0.3);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
-        
-        .status-success {
-            border-color: rgba(34, 197, 94, 0.5);
-            background: rgba(34, 197, 94, 0.1);
-        }
-        
-        .status-pending {
-            border-color: rgba(245, 158, 11, 0.5);
-            background: rgba(245, 158, 11, 0.1);
-        }
-        
-        .status-icon {
-            font-size: 3rem;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        
-        .status-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        
-        .status-description {
-            color: #cbd5e1;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .status-details {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            font-size: 0.9rem;
-        }
-        
-        .status-details div {
-            margin-bottom: 8px;
-        }
-        
-        .status-details strong {
-            color: #93c5fd;
-        }
-        
-        .feature-list {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 15px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            margin-bottom: 30px;
-        }
-        
-        .feature-list h3 {
-            color: #93c5fd;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .features {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        
-        .feature {
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: rgba(99, 102, 241, 0.1);
-            border-radius: 8px;
+            justify-content: space-between;
         }
-        
-        .feature-icon {
-            color: #10b981;
-            font-weight: bold;
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
         }
-        
-        .pricing-info {
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .checkout-section {
             background: rgba(0, 0, 0, 0.4);
-            border-radius: 15px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(99, 102, 241, 0.3);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #00ffff, #9d4edd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-align: center;
         }
-        
-        .pricing-info h3 {
-            color: #93c5fd;
+
+        .order-summary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .summary-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #00ffff;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .item-details {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: #00ffff;
+        }
+
+        .delivery-info {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .delivery-title {
+            font-weight: 600;
+            color: #00ffff;
             margin-bottom: 15px;
         }
-        
-        .pricing-breakdown {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
+
+        .delivery-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .cost-summary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .cost-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .cost-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .cost-value {
+            font-weight: 600;
+        }
+
+        .total-row {
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+            padding-top: 20px;
             margin-top: 20px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #00ffff;
         }
-        
-        .price-item {
-            background: rgba(99, 102, 241, 0.1);
+
+        .payment-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .payment-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #00ffff;
+        }
+
+        #card-element {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
             padding: 15px;
-            border-radius: 10px;
+            margin-bottom: 20px;
         }
-        
-        .price-amount {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #10b981;
+
+        .stripe-style-input {
+            box-shadow: 0 1px 3px 0 #e6ebf1;
+            -webkit-transition: box-shadow 150ms ease;
+            transition: box-shadow 150ms ease;
         }
-        
-        .btn {
-            background: linear-gradient(45deg, #6366f1, #8b5cf6);
-            color: white;
+
+        .stripe-style-input:focus {
+            box-shadow: 0 1px 3px 0 #cfd7df;
+        }
+
+        .payment-button {
+            width: 100%;
+            background: linear-gradient(135deg, #00ffff, #9d4edd);
             border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 1.1rem;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 18px;
             font-weight: 600;
             cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            margin: 10px;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
         }
-        
-        .btn:hover {
+
+        .payment-button:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.4);
         }
-        
+
+        .payment-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #00ffff;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .status-grid,
-            .features,
-            .pricing-breakdown {
-                grid-template-columns: 1fr;
+            .main-container {
+                padding: 20px 10px;
+            }
+
+            .checkout-section {
+                padding: 25px;
+            }
+
+            .order-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .cost-row {
+                font-size: 14px;
+            }
+
+            .total-row {
+                font-size: 18px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Shopify Integration Status</h1>
-            <p>Your MarketPace Pro Shopify store integration overview</p>
+    <!-- Floating Particles -->
+    <script>
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDelay = Math.random() * 10 + 's';
+            particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
+            document.body.appendChild(particle);
+        }
+    </script>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">MarketPace</div>
+            <a href="/cart" class="back-btn">
+                ← Back to Cart
+            </a>
         </div>
-        
-        <div class="status-grid">
-            <div class="status-card status-success">
-                <div class="status-icon">✅</div>
-                <div class="status-title" style="color: #10b981;">Store Connection</div>
-                <div class="status-description">Successfully connected to your Shopify store</div>
-                <div class="status-details">
-                    <div><strong>Store:</strong> myshop.marketpace.com</div>
-                    <div><strong>Domain:</strong> myshop-marketpace-com.myshopify.com</div>
-                    <div><strong>Currency:</strong> USD</div>
-                    <div><strong>Status:</strong> Connected & Verified</div>
-                    <div><strong>API Version:</strong> 2024-01</div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div class="checkout-section">
+            <h1 class="section-title">🛒 Secure Checkout</h1>
+            
+            <!-- Order Summary -->
+            <div class="order-summary">
+                <h2 class="summary-title">Order Summary</h2>
+                <div id="orderItems">
+                    <!-- Order items will be loaded here -->
                 </div>
             </div>
-            
-            <div class="status-card status-pending">
-                <div class="status-icon">⏳</div>
-                <div class="status-title" style="color: #f59e0b;">Product Sync</div>
-                <div class="status-description">Pending merchant approval for read_products scope</div>
-                <div class="status-details">
-                    <div><strong>Status:</strong> Awaiting Shopify approval</div>
-                    <div><strong>Scope Needed:</strong> read_products</div>
-                    <div><strong>Demo Mode:</strong> Available with sample products</div>
-                    <div><strong>ETA:</strong> 1-2 business days</div>
-                    <div><strong>Action Required:</strong> Approve app in Shopify admin</div>
+
+            <!-- Delivery Information -->
+            <div class="delivery-info">
+                <h3 class="delivery-title">🚚 Delivery Information</h3>
+                <div class="delivery-detail">
+                    <span>Delivery Window:</span>
+                    <span id="deliveryWindow">-</span>
+                </div>
+                <div class="delivery-detail">
+                    <span>Urgent Delivery:</span>
+                    <span id="urgentStatus">No</span>
+                </div>
+                <div class="delivery-detail">
+                    <span>Estimated Distance:</span>
+                    <span>8.5 miles</span>
                 </div>
             </div>
-        </div>
-        
-        <div class="feature-list">
-            <h3>Available Features (MarketPace Pro)</h3>
-            <div class="features">
-                <div class="feature">
-                    <span class="feature-icon">✓</span>
-                    <span>Store connection & verification</span>
+
+            <!-- Cost Summary -->
+            <div class="cost-summary">
+                <div class="cost-row">
+                    <span class="cost-label">Subtotal:</span>
+                    <span class="cost-value" id="subtotalAmount">$0.00</span>
                 </div>
-                <div class="feature">
-                    <span class="feature-icon">✓</span>
-                    <span>Custom shipping & processing fees</span>
+                <div class="cost-row">
+                    <span class="cost-label">Platform Fee (5%):</span>
+                    <span class="cost-value" id="platformFeeAmount">$0.00</span>
                 </div>
-                <div class="feature">
-                    <span class="feature-icon">✓</span>
-                    <span>MarketPace local delivery integration</span>
+                <div class="cost-row">
+                    <span class="cost-label">Membership Protection:</span>
+                    <span class="cost-value" id="protectionFeeAmount">$0.50</span>
                 </div>
-                <div class="feature">
-                    <span class="feature-icon">✓</span>
-                    <span>Delivery cost calculation</span>
+                <div style="font-size: 11px; color: rgba(255,255,255,0.6); margin-left: 20px; margin-top: -5px; margin-bottom: 10px;">
+                    🛡️ Damage protection up to $100 per item
                 </div>
-                <div class="feature">
-                    <span class="feature-icon">⏳</span>
-                    <span>Product sync from Shopify</span>
+                <div class="cost-row">
+                    <span class="cost-label">Delivery Fee:</span>
+                    <span class="cost-value" id="deliveryFeeAmount">$0.00</span>
                 </div>
-                <div class="feature">
-                    <span class="feature-icon">⏳</span>
-                    <span>Facebook product promotion</span>
+                <div class="cost-row">
+                    <span class="cost-label">Large Item Fee:</span>
+                    <span class="cost-value" id="largeItemFeeAmount">$0.00</span>
                 </div>
-                <div class="feature">
-                    <span class="feature-icon">⏳</span>
-                    <span>Product management dashboard</span>
+                <div class="cost-row">
+                    <span class="cost-label">Mileage Fee:</span>
+                    <span class="cost-value" id="mileageFeeAmount">$0.00</span>
                 </div>
-                <div class="feature">
-                    <span class="feature-icon">⏳</span>
-                    <span>Auto-sync new products</span>
+                <div class="cost-row" id="urgentFeeRow" style="display: none;">
+                    <span class="cost-label">Urgent Fee:</span>
+                    <span class="cost-value" id="urgentFeeAmount">$10.00</span>
                 </div>
-            </div>
-        </div>
-        
-        <div class="pricing-info">
-            <h3>MarketPace Delivery Cost Structure</h3>
-            <p style="color: #cbd5e1; margin-bottom: 20px;">
-                Your customers see the total cost while you control your additional fees
-            </p>
-            
-            <div class="pricing-breakdown">
-                <div class="price-item">
-                    <div class="price-amount">$4.00</div>
-                    <div>Pickup Fee</div>
-                    <small style="color: #94a3b8;">Charged to business</small>
-                </div>
-                <div class="price-item">
-                    <div class="price-amount">$2.00</div>
-                    <div>Drop-off Fee</div>
-                    <small style="color: #94a3b8;">Charged to business</small>
-                </div>
-                <div class="price-item">
-                    <div class="price-amount">$0.50</div>
-                    <div>Per Mile</div>
-                    <small style="color: #94a3b8;">Distance-based</small>
+                <div class="cost-row total-row">
+                    <span class="cost-label">Total:</span>
+                    <span class="cost-value" id="totalAmount">$0.00</span>
                 </div>
             </div>
-            
-            <p style="color: #cbd5e1; margin-top: 20px; font-size: 0.9rem;">
-                + Your custom shipping fee (set in integration settings)
-            </p>
-            
-            <div style="margin-top: 30px;">
-                <a href="/shopify-business-integration" class="btn">Manage Integration</a>
-                <a href="/shopify-product-manager" class="btn">View Products</a>
+
+            <!-- Payment Section -->
+            <div class="payment-section">
+                <h3 class="payment-title">💳 Payment Information</h3>
+                <form id="payment-form">
+                    <div id="card-element">
+                        <!-- Stripe Elements will create form elements here -->
+                    </div>
+                    
+                    <button type="submit" id="submit-button" class="payment-button">
+                        Complete Payment
+                    </button>
+                    
+                    <div id="loading" class="loading">
+                        <div class="spinner"></div>
+                        Processing your payment...
+                    </div>
+                    
+                    <div id="error-message" class="error-message"></div>
+                    <div id="success-message" class="success-message"></div>
+                </form>
             </div>
         </div>
     </div>
+
+    <script>
+        // Initialize Stripe with your publishable key
+        const stripe = Stripe('pk_test_51RWIgaP3SiNvxf9FaVhQzEBMKTcTIy7SkCpOPyLuS12JMEykSGD31RA2BbbirGNgXhRLiAqlDqDweQNk06f9aEGK00WRSmHeKL');
+        const elements = stripe.elements();
+
+        // Create card element
+        const cardElement = elements.create('card', {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    color: '#ffffff',
+                    '::placeholder': {
+                        color: 'rgba(255, 255, 255, 0.6)',
+                    },
+                    backgroundColor: 'transparent',
+                },
+                invalid: {
+                    color: '#ef4444',
+                },
+            },
+        });
+
+        cardElement.mount('#card-element');
+
+        let checkoutData = null;
+
+        // Load checkout data
+        function loadCheckoutData() {
+            const data = localStorage.getItem('marketplaceCheckout');
+            if (!data) {
+                window.location.href = '/cart';
+                return;
+            }
+
+            checkoutData = JSON.parse(data);
+            displayOrderSummary();
+        }
+
+        // Display order summary
+        function displayOrderSummary() {
+            if (!checkoutData) return;
+
+            // Display items
+            const orderItemsContainer = document.getElementById('orderItems');
+            orderItemsContainer.innerHTML = checkoutData.items.map(item => `
+                <div class="order-item">
+                    <div class="item-info">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-details">Sold by ${item.seller} • Size: ${item.size}</div>
+                    </div>
+                    <div class="item-price">$${item.price.toFixed(2)}</div>
+                </div>
+            `).join('');
+
+            // Display delivery information
+            const timeMapping = {
+                '9-12': '9:00 AM - 12:00 PM',
+                '12-3': '12:00 PM - 3:00 PM',
+                '3-6': '3:00 PM - 6:00 PM',
+                '6-9': '6:00 PM - 9:00 PM'
+            };
+
+            document.getElementById('deliveryWindow').textContent = timeMapping[checkoutData.deliveryWindow] || 'Not selected';
+            document.getElementById('urgentStatus').textContent = checkoutData.urgentDelivery ? 'Yes (+$10)' : 'No';
+
+            // Display costs
+            document.getElementById('subtotalAmount').textContent = `$${checkoutData.costs.subtotal.toFixed(2)}`;
+            document.getElementById('platformFeeAmount').textContent = `$${(checkoutData.costs.platformFee || 0).toFixed(2)}`;
+            document.getElementById('protectionFeeAmount').textContent = `$${(checkoutData.costs.protectionFee || 0.50).toFixed(2)}`;
+            document.getElementById('deliveryFeeAmount').textContent = `$${checkoutData.costs.deliveryFee.toFixed(2)}`;
+            document.getElementById('largeItemFeeAmount').textContent = `$${checkoutData.costs.largeItemFee.toFixed(2)}`;
+            document.getElementById('mileageFeeAmount').textContent = `$${checkoutData.costs.mileageFee.toFixed(2)}`;
+
+            if (checkoutData.urgentDelivery) {
+                document.getElementById('urgentFeeRow').style.display = 'flex';
+                document.getElementById('urgentFeeAmount').textContent = `$${checkoutData.costs.urgentFee.toFixed(2)}`;
+            }
+
+            const total = checkoutData.costs.subtotal + 
+                         (checkoutData.costs.platformFee || 0) +
+                         (checkoutData.costs.protectionFee || 0.50) +
+                         checkoutData.costs.deliveryFee + 
+                         checkoutData.costs.largeItemFee + 
+                         checkoutData.costs.mileageFee + 
+                         checkoutData.costs.urgentFee;
+
+            document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Handle form submission
+        const form = document.getElementById('payment-form');
+        const submitButton = document.getElementById('submit-button');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            if (!checkoutData) {
+                showError('Checkout data not found. Please return to cart.');
+                return;
+            }
+
+            // Show loading state
+            submitButton.disabled = true;
+            loading.style.display = 'block';
+            hideMessages();
+
+            try {
+                // Create payment intent
+                const response = await fetch('/api/stripe/create-payment-intent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        amount: Math.round(getTotalAmount() * 100), // Convert to cents
+                        orderId: `MP-${Date.now()}`,
+                        metadata: {
+                            orderItems: JSON.stringify(checkoutData.items.map(item => ({
+                                name: item.name,
+                                seller: item.seller,
+                                price: item.price
+                            }))),
+                            deliveryWindow: checkoutData.deliveryWindow,
+                            urgentDelivery: checkoutData.urgentDelivery
+                        }
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Payment processing failed');
+                }
+
+                const { clientSecret } = await response.json();
+
+                // Confirm payment
+                const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                        card: cardElement,
+                    }
+                });
+
+                if (error) {
+                    showError(error.message);
+                } else if (paymentIntent.status === 'succeeded') {
+                    // Payment successful
+                    showSuccess('Payment successful! Your order has been placed.');
+                    
+                    // Clear cart and checkout data
+                    localStorage.removeItem('marketplaceCart');
+                    localStorage.removeItem('marketplaceCheckout');
+                    
+                    // Redirect to confirmation page after delay
+                    setTimeout(() => {
+                        window.location.href = '/community';
+                    }, 3000);
+                }
+            } catch (error) {
+                showError('Payment failed. Please try again.');
+                console.error('Payment error:', error);
+            } finally {
+                submitButton.disabled = false;
+                loading.style.display = 'none';
+            }
+        });
+
+        // Helper functions
+        function getTotalAmount() {
+            if (!checkoutData) return 0;
+            return checkoutData.costs.subtotal + 
+                   (checkoutData.costs.platformFee || 0) +
+                   (checkoutData.costs.protectionFee || 0.50) +
+                   checkoutData.costs.deliveryFee + 
+                   checkoutData.costs.largeItemFee + 
+                   checkoutData.costs.mileageFee + 
+                   checkoutData.costs.urgentFee;
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+
+        function hideMessages() {
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+        }
+
+        // Initialize checkout on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCheckoutData();
+        });
+    </script>
 </body>
 </html>
